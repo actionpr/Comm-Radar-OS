@@ -3,327 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comm Radar — Communication Intelligence OS</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>Dock-In-sight</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0a0b10; --surface: #12131a; --surface2: #161824; --border: #1e2030;
-  --text: #e2e4ed; --dim: #8b90a5; --muted: #64748b; --faint: #484c60;
-  --accent: #6366f1; --accent2: #818cf8; --green: #10b981; --amber: #f59e0b; --red: #f43f5e;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
-::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--surface); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-.fade { animation: fadeUp .5s ease forwards; opacity: 0; }
-.container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-
-/* Header */
-.hero { background: linear-gradient(135deg, rgba(99,102,241,.12), rgba(16,185,129,.08) 50%, rgba(244,63,94,.06)); border-bottom: 1px solid var(--border); padding: 32px 24px 24px; }
-.hero-inner { max-width: 960px; margin: 0 auto; }
-.badge { display:inline-block; background:var(--accent); color:#fff; font-size:11px; font-weight:800; padding:4px 12px; border-radius:99px; letter-spacing:1px; }
-.live { color:var(--green); font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; margin-left:auto; }
-.live-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
-h1 { font-size:28px; font-weight:900; letter-spacing:-0.5px; margin: 12px 0 4px; }
-.subtitle { color:var(--dim); font-size:14px; margin-bottom:20px; }
-.summary-item { font-size:14px; padding:8px 0; border-bottom:1px solid var(--border); }
-.summary-item:last-child { border:none; }
-
-/* Stats */
-.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; padding:16px 0; }
-.stat { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 12px; text-align:center; }
-.stat-num { font-size:26px; font-weight:900; font-family:'JetBrains Mono'; }
-.stat-label { font-size:11px; color:var(--muted); margin-top:2px; }
-
-/* Tabs */
-.tabs { display:flex; gap:2px; background:var(--surface); border-radius:10px; padding:3px; border:1px solid var(--border); margin-bottom:16px; overflow-x:auto; }
-.tab { flex:1; padding:10px 14px; background:none; border:none; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; border-radius:8px; white-space:nowrap; transition:all .2s; font-family:inherit; }
-.tab.active { background:var(--accent); color:#fff; }
-.tab:hover:not(.active) { color:var(--text); }
-.tab-content { display:none; } .tab-content.active { display:block; }
-
-/* Filters */
-.filters { display:flex; gap:6px; margin-bottom:14px; flex-wrap:wrap; }
-.filter-btn { padding:6px 14px; border-radius:99px; border:1px solid var(--border); background:none; color:var(--muted); font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all .2s; }
-.filter-btn.active { border-color:var(--accent); background:rgba(99,102,241,.1); color:var(--accent2); }
-
-/* Cards */
-.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:12px; cursor:pointer; transition:transform .2s; }
-.card:hover { transform:translateY(-1px); }
-.card-header { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
-.type-badge { color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:99px; }
-.rel-badge { font-size:10px; font-weight:600; padding:2px 8px; border-radius:99px; }
-.card-title { font-size:14px; font-weight:700; line-height:1.4; }
-.card-detail { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); display:none; }
-.card-detail.open { display:block; }
-.card-insight { font-size:13px; color:var(--dim); line-height:1.7; margin-bottom:10px; }
-.card-action { font-size:12px; color:var(--accent2); font-weight:600; }
-
-/* Overview card */
-.overview-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:12px; }
-
-/* HN */
-.hn-item { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:12px; display:flex; gap:14px; }
-.hn-buzz { font-size:28px; flex-shrink:0; }
-.hn-title { font-size:15px; font-weight:700; margin-bottom:6px; }
-.hn-summary { font-size:13px; color:var(--dim); line-height:1.6; margin-bottom:8px; }
-.hn-insight { font-size:12px; color:var(--accent2); line-height:1.5; padding:8px 12px; background:rgba(99,102,241,.03); border-radius:8px; border:1px solid rgba(99,102,241,.12); }
-
-/* Steam */
-.steam-summary { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px; margin-bottom:16px; }
-.genre-tag { padding:4px 12px; background:rgba(245,158,11,.08); color:var(--amber); font-size:12px; font-weight:600; border-radius:99px; border:1px solid rgba(245,158,11,.2); display:inline-block; margin:4px 4px 4px 0; }
-table { width:100%; border-collapse:collapse; background:var(--surface); border-radius:12px; overflow:hidden; border:1px solid var(--border); margin-bottom:16px; }
-th { background:var(--surface2); padding:10px 12px; font-size:11px; color:var(--muted); text-align:left; font-weight:600; }
-td { padding:10px 12px; font-size:13px; border-top:1px solid var(--border); }
-.rank { font-weight:800; color:var(--accent2); font-family:'JetBrains Mono'; }
-.score { font-weight:700; color:var(--green); font-family:'JetBrains Mono'; }
-.tag-sm { font-size:10px; color:var(--muted); background:var(--border); padding:2px 6px; border-radius:4px; display:inline-block; margin:1px; }
-.notable-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
-.notable-card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px; }
-.notable-card strong { font-size:14px; }
-.notable-card p { font-size:12px; color:var(--dim); margin:4px 0; }
-.notable-why { font-size:11px; color:var(--amber); }
-
-.footer { text-align:center; padding:40px 0 24px; color:var(--faint); font-size:11px; }
-.source { font-size:11px; color:var(--faint); margin-left:auto; }
-
-@media(max-width:640px) { .stats{grid-template-columns:repeat(2,1fr);} .notable-grid{grid-template-columns:1fr;} h1{font-size:22px;} }
+*{box-sizing:border-box;margin:0;padding:0}
+::selection{background:#1a1a1a;color:#FAFAF8}
+body{font-family:'Source Serif 4','Noto Serif KR',Georgia,serif;background:#FAFAF8;color:#1a1a1a}
+@media(max-width:900px){.cr-layout{flex-direction:column!important}.cr-sidebar{position:static!important;width:100%!important;border-left:none!important;border-top:1px solid #ddd!important;padding-top:24px!important;margin-top:24px!important;padding-left:0!important}}
 </style>
 </head>
 <body>
-
-<div class="hero">
-<div class="hero-inner">
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-    <span class="badge">ISSUE #001</span>
-    <span style="color:var(--muted);font-size:13px">2026년 5월 15일</span>
-    <span class="live"><span class="live-dot"></span>LIVE</span>
-  </div>
-  <h1>📡 Comm Radar</h1>
-  <p class="subtitle">Weekly Communication Intelligence · Bagelcode</p>
-  <div>
-    <div class="summary-item fade" style="animation-delay:.1s">🏢 54% 기업이 AI 에이전트 도입, 그러나 조직문화가 못 따라가는 'Culture Drift' 현상이 핵심 병목</div>
-    <div class="summary-item fade" style="animation-delay:.25s">🎮 크래프톤 AI 모델 '라온' 공개, LG헬로비전 AI 해커톤 — 국내도 Agent-Driven 조직 전환 가속</div>
-    <div class="summary-item fade" style="animation-delay:.4s">🔗 베이글코드의 Agent-Driven 문화가 글로벌 트렌드를 1~2년 선도하고 있다는 외부 데이터 확보</div>
-  </div>
-</div>
-</div>
-
-<div class="container">
-<div class="stats">
-  <div class="stat"><div class="stat-num" style="color:var(--accent)">27</div><div class="stat-label">수집 항목</div></div>
-  <div class="stat"><div class="stat-num" style="color:var(--green)">4</div><div class="stat-label">High 관련도</div></div>
-  <div class="stat"><div class="stat-num" style="color:var(--amber)">11</div><div class="stat-label">딥 인사이트</div></div>
-  <div class="stat"><div class="stat-num" style="color:var(--red)">8</div><div class="stat-label">게임 시그널</div></div>
-</div>
-
-<div class="tabs">
-  <button class="tab active" data-tab="overview">📊 종합</button>
-  <button class="tab" data-tab="news">🏢 조직문화 동향</button>
-  <button class="tab" data-tab="tech">📝 딥 인사이트</button>
-  <button class="tab" data-tab="steam">🎮 게임 시그널</button>
-</div>
-
-<!-- OVERVIEW -->
-<div class="tab-content active" id="tab-overview">
-  <h2 style="font-size:16px;font-weight:700;margin-bottom:14px">🔑 이번 주 핵심 액션</h2>
-
-  <div class="overview-card" style="border-left:3px solid #10b981">
-    <div class="card-header"><span class="type-badge" style="background:#10b981">조직문화</span><span class="source">WRITER / Workplace Intelligence · 2026.05</span></div>
-    <div class="card-title" style="font-size:15px;margin-bottom:8px">97% 기업이 AI 에이전트 도입, 그런데 54%는 "AI가 회사를 찢어놓고 있다"고 고백</div>
-    <p class="card-insight">AI 에이전트 도입은 보편화됐지만, 개인 생산성 향상이 조직 성과로 전환되지 못하는 'Culture Drift'가 핵심 병목. 베이글코드의 Agent-Driven 문화는 이 구조적 문제를 정면으로 해결하는 접근으로, 차별적 사례 가치가 매우 높다.</p>
-    <div class="card-action">→ 'AI 도입의 진짜 병목은 기술이 아닌 문화' 프레이밍으로 AX 스토리텔링 강화</div>
-  </div>
-
-  <div class="overview-card" style="border-left:3px solid #6366f1">
-    <div class="card-header"><span class="type-badge" style="background:#6366f1">글로벌 게임사</span><span class="source">크래프톤 / 오버데어 · 2026.04</span></div>
-    <div class="card-title" style="font-size:15px;margin-bottom:8px">크래프톤, AI 모델 '라온' 오픈소스 공개 + 자회사 오버데어 '스튜디오 에이전트' 출시</div>
-    <p class="card-insight">크래프톤이 'AI 퍼스트' 전환을 선언하며 1,000억원 이상 투자. 자체 AI 모델 브랜드까지 구축. 국내 게임사 중 가장 공격적인 AI 전환이지만, 접근은 '모델 개발' 중심. 베이글코드의 'Agent-Driven 조직문화'와는 결이 다른 전략이라 비교 포인트로 활용 가능.</p>
-    <div class="card-action">→ '모델 개발 vs 조직문화 전환' 프레임으로 베이글코드 AX의 차별점 정리</div>
-  </div>
-
-  <div class="overview-card" style="border-left:3px solid #f59e0b">
-    <div class="card-header"><span class="type-badge" style="background:#f59e0b">국내 IT</span><span class="source">LG헬로비전 / 머니투데이 · 2026.05.13</span></div>
-    <div class="card-title" style="font-size:15px;margin-bottom:8px">LG헬로비전, '사내 AI 에이전트 해커톤' — 203명 참여, 83개 과제 제출</div>
-    <p class="card-insight">LG헬로비전이 임직원이 직접 AI 에이전트를 만드는 해커톤을 진행. '인사이트 레이더'(마케팅 실시간 포착)가 대상. 베이글코드 AI Jam과 동일한 접근이지만, 베이글코드는 이미 2023년부터 Game Jam → AI Jam 발전 궤적이 있어 훨씬 선도적.</p>
-    <div class="card-action">→ 타사 해커톤과 비교하여 베이글코드 AI Jam의 '누적 문화 자산' 가치 강조</div>
-  </div>
-
-  <div class="overview-card" style="border-left:3px solid #6366f1">
-    <div class="card-header"><span class="type-badge" style="background:#6366f1">AI 에이전트</span><span class="source">Gartner · 2026</span></div>
-    <div class="card-title" style="font-size:15px;margin-bottom:8px">Gartner: 2026년 말 기업 앱 40%에 AI 에이전트 통합 (작년 5% → 8배 급증)</div>
-    <p class="card-insight">에이전트 도입이 폭발적으로 가속되지만, McKinsey에 따르면 전체 워크플로우를 재설계한 기업은 단 21%. 나머지 79%는 기존 프로세스 위에 AI를 덧씌우는 수준. 베이글코드가 Agent-Driven OS를 처음부터 설계하는 방식은 상위 21%.</p>
-    <div class="card-action">→ Gartner 40%·McKinsey 21% 데이터를 IR/외부 발표 레퍼런스로 활용</div>
-  </div>
-
-  <h2 style="font-size:16px;font-weight:700;margin:20px 0 14px">⚡ 딥 인사이트 하이라이트</h2>
-
-  <div class="hn-item"><span class="hn-buzz">📝</span><div><div class="hn-title">"Culture Drift: AI 시대의 진짜 병목은 문화가 기술을 못 따라가는 것"</div><div class="hn-summary">Mentessa 칼럼 — 속도는 올라가는데 정렬은 무너지고, 혁신은 빨라지는데 신뢰는 줄어드는 구조적 딜레마. 베이글코드의 '지적 정직성' 핵심가치가 이 문제의 해답.</div></div></div>
-  <div class="hn-item"><span class="hn-buzz">📝</span><div><div class="hn-title">"Google Cloud Next: AI 도입은 기술이 아닌 문화적 전환"</div><div class="hn-summary">CDW 아키텍트 — "라이선스 활성화하고 교육 링크 보내는 걸로는 안 된다. 호기심의 문화를 만들어야." 베이글코드 AI Jam이 바로 이 '호기심의 문화'를 구축하는 장치.</div></div></div>
-  <div class="hn-item"><span class="hn-buzz">📝</span><div><div class="hn-title">"Forrester: 디지털 직원 관리가 HR의 새 역할 — 에이전트도 온보딩이 필요하다"</div><div class="hn-summary">2026년 예측 — AI 에이전트를 '디지털 직원'으로 공식 편입. 베이글코드의 '인간 세계와 AI 세계의 계약' 철학이 이 흐름을 이미 선취.</div></div></div>
-</div>
-
-<!-- NEWS -->
-<div class="tab-content" id="tab-news">
-  <div class="filters">
-    <button class="filter-btn active" data-filter="all">전체</button>
-    <button class="filter-btn" data-filter="실리콘밸리">실리콘밸리 AI</button>
-    <button class="filter-btn" data-filter="글로벌게임사">글로벌 게임사</button>
-    <button class="filter-btn" data-filter="국내IT">국내 IT/게임</button>
-    <button class="filter-btn" data-filter="에이전트문화">에이전트 문화</button>
-  </div>
-  <div id="news-list"></div>
-</div>
-
-<!-- TECH -->
-<div class="tab-content" id="tab-tech">
-  <div id="tech-list"></div>
-</div>
-
-<!-- STEAM -->
-<div class="tab-content" id="tab-steam">
-  <div class="steam-summary">
-    <h3 style="font-size:15px;font-weight:700;margin-bottom:8px">🔥 이번 주 게임 트렌드</h3>
-    <p style="font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:10px">2026년 5월, AI 기반 절차적 생성과 자동화 장르 강세. 하이브리드 장르(로그라이크+시뮬레이션, 공포+농장) 실험적 조합이 높은 평가.</p>
-    <div><span class="genre-tag">로그라이크 시뮬레이션</span><span class="genre-tag">자동화/팩토리</span><span class="genre-tag">공포 생존</span></div>
-  </div>
-
-  <table>
-    <thead><tr><th>#</th><th>게임</th><th>긍정률</th><th>소유자</th><th>점수</th><th>태그</th></tr></thead>
-    <tbody id="steam-table"></tbody>
-  </table>
-
-  <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">📌 주목 게임</h3>
-  <div class="notable-grid" id="notable-grid"></div>
-</div>
-
-<footer class="footer">
-  <p>Comm Radar #001 · 2026년 5월 15일 · Bagelcode Communication Intelligence OS</p>
-  <p style="margin-top:4px;opacity:.6">Powered by Claude API · GitHub Actions 자동화 · Agent-Driven OS</p>
-</footer>
-</div>
-
+<div id="root"></div>
 <script>
-const NEWS = [
-  {id:1,title:"97% 기업이 AI 에이전트 도입했지만, 54%는 '회사를 찢어놓고 있다'고 고백",cat:"에이전트문화",rel:"high",type:"에이전트문화",insight:"WRITER 2026 조사: 개인 생산성은 올랐지만 조직 성과로 전환 못하는 구조적 단절. AI 슈퍼유저는 5배 생산성이지만 ROI를 보는 기업은 29%뿐. 베이글코드의 Agent-Driven 문화가 이 '개인→조직 전환' 문제를 정면으로 해결하는 사례.",action:"'AI 도구 도입이 아닌 문화 전환이 진짜 AX' 스토리텔링 강화",source:"WRITER / Workplace Intelligence",date:"2026.05"},
-  {id:2,title:"크래프톤, AI 모델 브랜드 '라온' 출범 + 1,000억원 이상 AI 투자",cat:"글로벌게임사",rel:"high",type:"글로벌게임사",insight:"크래프톤이 자체 AI 모델(음성·비전·TTS) 4종을 오픈소스로 공개하고, 오버데어 '스튜디오 에이전트'로 자연어 게임 제작 도구 출시. '모델 개발' 중심 접근. 베이글코드는 '조직문화 전환' 중심이라 전략적 결이 다르다.",action:"크래프톤(모델 중심) vs 베이글코드(문화 중심) AI 전략 비교 프레임 정리",source:"네이트뉴스 / 크래프톤",date:"2026.04"},
-  {id:3,title:"LG헬로비전, 사내 AI 에이전트 해커톤 — 203명 참여, 83개 과제",cat:"국내IT",rel:"high",type:"국내IT",insight:"LG헬로비전 대표: 'AX 문화 정착의 중요한 기점'. 대상작 '인사이트 레이더'는 마케팅 실시간 포착 에이전트. 베이글코드 AI Jam(2023년부터)과 동일한 접근이지만 시작점이 2~3년 후발.",action:"베이글코드 AI Jam의 누적 궤적(2023→2026)을 '문화 자산'으로 스토리화",source:"머니투데이",date:"2026.05.13"},
-  {id:4,title:"Gartner: 기업 앱 40%에 AI 에이전트 통합 전망 (작년 5%의 8배)",cat:"에이전트문화",rel:"high",type:"에이전트문화",insight:"에이전트 도입 폭발적 가속. 그러나 McKinsey: 워크플로우 전체를 재설계한 기업은 21%뿐. 79%는 기존 프로세스에 AI를 얹는 수준. 베이글코드처럼 OS를 처음부터 설계하는 곳이 상위 21%에 해당.",action:"Gartner 40% + McKinsey 21% 데이터를 IR·타운홀 레퍼런스로 삽입",source:"Gartner / McKinsey",date:"2026"},
-  {id:5,title:"SAP, 'Autonomous Enterprise' — Anthropic Claude를 파운데이션 모델 파트너 지목",cat:"실리콘밸리",rel:"medium",type:"실리콘밸리",insight:"SAP가 50개 이상 AI 에이전트를 HR·구매·공급망에 배치하며 Anthropic을 공식 파트너로 지목. 베이글코드가 사용하는 동일 AI가 글로벌 엔터프라이즈 표준으로 인정.",action:"'글로벌 엔터프라이즈가 선택한 AI로 이미 일하는 조직' 프레이밍",source:"SAP News Center",date:"2026.05.15"},
-  {id:6,title:"Anthropic 기업가치 $9,500억 — 비즈니스 고객 점유율 OpenAI 추월",cat:"실리콘밸리",rel:"medium",type:"실리콘밸리",insight:"API 트래픽 17배 성장, PwC·Mercado Libre 등 대형 고객 확보. 베이글코드의 Claude 채택이 '전략적으로 정확했다'는 시장 데이터.",action:"IR에서 'AI 파트너 선택의 전략적 정확성' 내러티브 준비",source:"TechCrunch",date:"2026.05.13"},
-  {id:7,title:"메가존클라우드, '멀티 에이전트 오케스트레이터' 선언 — AI FDE 150명 투입",cat:"국내IT",rel:"medium",type:"국내IT",insight:"'기업이 수백 개 AI 에이전트를 동시 운영하게 될 것, 통제 없으면 혼란' 경고. JB우리캐피탈은 여신 심사 에이전트로 업무 시간 80% 단축. 국내 AI 에이전트 생태계가 본격 형성 중.",action:"국내 AI 에이전트 도입 사례 맵핑 + 베이글코드 포지셔닝 정리",source:"국민일보 / 이코노믹리뷰",date:"2026.05.14"},
-  {id:8,title:"국내 게임 종사자 72%가 AI 활용, 업무 시간 32.4% 단축",cat:"글로벌게임사",rel:"medium",type:"글로벌게임사",insight:"한국콘텐츠진흥원 실태조사: NC·넥슨·크래프톤·넷마블·스마일게이트 모두 AI 전담 조직 강화. 2026년은 AI 투자가 실제 결과물로 검증되는 해. 베이글코드는 '도구 도입'을 넘어 '조직문화 전환'까지 간 차별적 사례.",action:"게임업계 AI 도입률 데이터(72%) + 베이글코드의 문화적 차별점 정리",source:"이코리아 / 한국콘텐츠진흥원",date:"2026.01"}
+const e=React.createElement,{useState}=React;
+const TODAY="Fri, May 16, 2026 ⛅ 24°",EDITION="No. 042";
+const HEADLINE="AI 에이전트 도입률이 폭발적으로 올라가는 만큼, 조직문화가 기술을 따라가지 못하는 'Culture Drift'가 2026년의 진짜 전쟁터다.";
+const DESKS=[
+{id:"market",name:"Market",sub:"게임·테크 비즈니스 동향",items:[
+{title:"크래프톤, 자체 AI 모델 '라온' 오픈소스 공개",source:"크래프톤 공식 발표",date:"2026.04.02",selection:"'AI 퍼스트' 전환 선언 이후 자체 파운데이션 모델까지 구축한 국내 게임사 최초 사례. 음성·비전·TTS 4종, 1,000억원 이상 투자 규모.",link:"크래프톤은 '모델 개발' 중심, 베이글코드는 '조직문화 전환' 중심. 같은 AI 전환이지만 전략적 결이 다르다."},
+{title:"Anthropic, 비즈니스 고객 점유율 OpenAI 첫 추월",source:"TechCrunch",date:"2026.05.13",selection:"기업가치 $9,500억 추정. Claude가 비즈니스 시장에서 GPT를 역전한 첫 데이터. API 트래픽 전년 대비 17배 성장.",link:"베이글코드의 Claude 채택이 '전략적으로 정확했다'는 시장 검증. IR 커뮤니케이션에서 활용 가치가 높다."},
+{title:"메가존클라우드, 멀티 에이전트 통합 관리 사업 선언",source:"국민일보 · 이코노믹리뷰",date:"2026.05.14",selection:"국내 최대 MSP가 AI 오케스트레이터 역할 표방. JB우리캐피탈 여신 심사 에이전트로 업무 시간 80% 단축. IPO 준비 본격화.",link:"국내 AI 에이전트 생태계가 본격 형성 중. 베이글코드는 이 생태계에서 '고객'이 아닌 '선도 사용자'로 위치."}
+]},
+{id:"indie",name:"Indie",sub:"Steam·Reddit 인디 게임",items:[
+{title:"Dungeon Craftsman, 1인 개발 긍정률 94.8%",source:"SteamSpy · Reddit r/gaming (댓글 1,200+)",date:"2026.05",selection:"던전 탐험형 대장장이 로그라이크. AI 절차적 생성으로 무한 던전 구현. 소규모 팀의 한계를 돌파한 사례.",link:"1인 개발자가 AI로 AAA급 콘텐츠 볼륨 달성. GameBakery.ai의 '소규모 팀 역량 증폭'과 직결되는 시장 검증."},
+{title:"Signal Lost, AI 적응형 난이도로 Reddit 화제",source:"SteamSpy · Reddit r/truegaming (댓글 800+)",date:"2026.05",selection:"플레이어 행동을 AI가 실시간 분석하여 난이도 조절. 우주 정거장 공포 생존. 긍정률 93.5%.",link:"AI가 게임플레이의 핵심 메커니즘이 된 사례. 개발 도구를 넘어 게임 경험의 핵심으로 확장하는 트렌드."},
+{title:"AutoFactory Deluxe, 자동화 장르 소유자 급성장",source:"SteamSpy · Reddit r/gamingsuggestions (댓글 600+)",date:"2026.05",selection:"자원 관리 자동화 퍼즐 시뮬레이터. '최적화'와 '시스템 설계'가 핵심 재미인 장르의 꾸준한 성장.",link:"자동화 장르의 인기는 현실의 AI 자동화 관심과 병행. 게임이 기술 트렌드를 반영하는 문화적 시그널."}
+]},
+{id:"contents",name:"Contents",sub:"콘텐츠 트렌드 변화",items:[
+{title:"TikTok, 10분 영상 비중 40% 돌파",source:"Social Media Today · X Trending",date:"2026.05",selection:"15초에서 시작한 TikTok이 10분까지 확장. 숏폼 vs 롱폼 이분법이 무너지고, 콘텐츠 길이보다 '몰입 구조'가 핵심으로 부상.",link:"소셜 카지노 마케팅 포맷도 이 흐름 안에 있다. 15초 광고에서 스토리형 미드폼 콘텐츠로의 전환 검토 시점."},
+{title:"하이퍼캐주얼 시장 정체, 하이브리드 캐주얼로 전환",source:"Pocket Gamer · GamesBeat",date:"2026.05",selection:"광고 수익 의존 모델이 한계에 도달. IAP+광고 혼합의 하이브리드 캐주얼이 신규 표준으로 자리잡는 중.",link:"소셜 카지노의 F2P 운영 경험이 하이브리드 캐주얼에서 강점이 될 수 있다. 수익 모델 다각화 관점에서 모니터링 필요."},
+{title:"Threads, MAU 3억 돌파",source:"The Verge · Threads 공식",date:"2026.05",selection:"X 대안으로 출발한 Threads가 테크·비즈니스 담론의 새 거점으로 부상. 기업 커뮤니케이션 채널로서의 가치 상승.",link:"베이글코드 Threads 계정 운영 전략 검토 시점. AX 사례 공유 채널로 적합."}
+]},
+{id:"org",name:"Culture",sub:"AX 전략·일하는 방식·리더십",items:[
+{title:"McKinsey, 인력 구조를 인간 4만+에이전트 2만으로 재정의",source:"McKinsey CEO 발표",date:"2026.03",selection:"18개월 만에 AI 에이전트 3,000에서 20,000으로 확대. Lilli가 에이전틱 오케스트레이터로 진화. 채용 면접에 AI 오류 탐지 능력 테스트 도입.",link:"베이글코드의 '인간 세계와 AI 세계의 계약' 철학이 글로벌 최정상 컨설팅 펌의 운영 모델과 동일한 구조."},
+{title:"BCG, CEO 75%가 AI 수석 의사결정자 — 트레일블레이저는 15%",source:"BCG 2026 AI Report",date:"2026.01",selection:"2,400명 임원 조사. AI 투자 2배 증가, 에이전트에 전체 예산 30% 이상. 직원 75% 업스킬링한 CEO는 15%뿐.",link:"김준영 대표가 직접 AX를 총괄하고 전사 업스킬링을 주도하는 구조는 BCG 기준 트레일블레이저 15%에 해당."},
+{title:"LG헬로비전, 사내 AI 에이전트 해커톤 203명 참여",source:"머니투데이",date:"2026.05.13",selection:"'AX 문화 정착의 중요한 기점'. 대상작은 마케팅 실시간 포착 에이전트. 83개 과제 제출.",link:"베이글코드 AI Jam과 동일한 접근이나, 베이글코드는 2023년부터의 궤적이 있다. 시작점이 2~3년 앞선다."},
+{title:"HBR, AI 에이전트 의인화가 성과를 떨어뜨린다는 실험 결과",source:"Harvard Business Review · BCG·보스턴대",date:"2026.05",selection:"AI를 의인화하면 책임감 하락, 불필요한 에스컬레이션 증가, 리뷰 품질 저하. 명확한 역할의 파트너로 프레이밍해야.",link:"베이글코드의 '계약을 통한 협업' 철학이 이 연구 결론과 정확히 일치."},
+{title:"HBR, AI 전환의 병목은 모델이 아닌 조직 운영 모델",source:"Harvard Business Review · HBS + Microsoft",date:"2026.03",selection:"AI 전환이 멈추는 진짜 지점은 기술적 성과를 조직 운영 모델로 전환하는 마지막 구간.",link:"Agent-Driven OS, AI Jam, 핵심가치 체계가 이 Last Mile을 돌파하기 위한 장치들."},
+{title:"WRITER, AI 도입 기업 54%가 '조직을 찢어놓고 있다'고 응답",source:"WRITER · Workplace Intelligence",date:"2026.05",selection:"슈퍼유저 5배 생산성이 조직 ROI로 전환 안 되는 구조적 단절. 5가지 실패 패턴 도출.",link:"AI Jam과 타운홀이 슈퍼유저 성과를 조직으로 전파하는 시스템. 5가지 실패 패턴을 구조적으로 방지."}
+]}
 ];
-
-const TECH = [
-  {title:"HBR: \"AI 에이전트를 직원처럼 대하지 마라\" — 의인화가 오히려 성과를 떨어뜨린다",buzz:"📕",summary:"BCG·보스턴대 공동 연구: AI를 의인화하면 개인 책임감 하락, 불필요한 에스컬레이션 증가, 리뷰 품질 저하. '동료'가 아닌 '도구·파트너' 프레이밍이 핵심.",insight:"베이글코드 맥락: '인간 세계와 AI 세계의 계약' 철학이 정확히 이 연구 결론과 일치. AI를 의인화하지 않으면서도 협업 파트너로 정의하는 프레이밍."},
-  {title:"HBR: \"AI 전환의 'Last Mile' 문제\" — 모델 품질이 아닌 조직 전환이 병목",buzz:"📕",summary:"HBS 교수 + Microsoft: AI 전환의 진짜 장벽은 모델도 데이터도 아닌, 기술적 성과를 조직 운영 모델로 전환하는 '라스트 마일'. 대부분 기업이 여기서 멈춘다.",insight:"베이글코드 맥락: Agent-Driven OS, AI Jam, 핵심가치 공유가 바로 이 'Last Mile'을 돌파하는 장치들. HBS가 말하는 문제를 이미 실행으로 풀고 있다."},
-  {title:"HBR: \"에이전트 시대에 기업은 Agent Manager가 필요하다\"",buzz:"📕",summary:"HBS 교수: AI 에이전트가 실험에서 실행으로 넘어가면서, 에이전트를 관리하는 새로운 리더 역할이 필요. Salesforce 등 대기업 사례 분석.",insight:"베이글코드 맥락: 김준영 대표의 'AI 에이전트 디렉터' PI 키워드가 HBR이 말하는 Agent Manager 역할과 정확히 동일. 이미 실행 중인 리더십 모델."},
-  {title:"HBR: \"AI 실험에서 AI 전환으로\" — 'Micro-Productivity Trap'을 경계하라",buzz:"📕",summary:"개별 업무 최적화에 갇히면 워크플로우·가치사슬 재설계를 놓친다. 진짜 전환은 작업이 아닌 흐름을 바꾸는 것.",insight:"베이글코드 맥락: AI Jam의 핵심 과제가 '일회성 프롬프트가 아닌 OS 설계'. 개별 자동화가 아닌 업무 흐름 자체를 바꾸라는 HBR 조언을 구조화."},
-  {title:"HBR: \"당신의 조직은 AI 에이전트를 위해 준비되어 있는가?\"",buzz:"📕",summary:"AI가 조정 비용을 줄이면 조직 구조 자체가 변한다. Agent-first 조직은 적절한 안전장치 아래 점진적이 아닌 변혁적 개선을 달성.",insight:"베이글코드 맥락: '3인 맥스' 원칙이 바로 AI가 줄여준 조정 비용을 조직 구조에 반영한 것. HBR이 제시하는 Agent-first 조직의 실현 형태."},
-  {title:"WRITER 2026: \"54%가 AI가 회사를 찢어놓고 있다\" — 5가지 실패 패턴",buzz:"📝",summary:"슈퍼유저 5배 생산성이지만 ROI는 29%뿐. 실패 원인: ①성과 전파 부재 ②거버넌스 갭 ③생산성≠ROI ④구조 변환 없음 ⑤퍼포먼스 위기.",insight:"베이글코드 맥락: AI Jam·타운홀·핵심가치 공유가 '슈퍼유저 성과를 조직으로 전파하는 시스템'. 5가지 실패 패턴을 모두 방지하는 구조."},
-  {title:"Mentessa: \"Culture Drift\" — AI 시대의 진짜 병목은 문화의 관성",buzz:"📝",summary:"속도↑→정렬↓, 혁신↑→신뢰↓. 두려움이 호기심을 대체하면 문화가 무너진다. PwC: 65%가 에이전트 파일럿 중이지만 대부분 확장 실패.",insight:"베이글코드 맥락: '지적 정직성' 핵심가치가 Culture Drift 방지의 핵심 장치. 두려움→호기심 전환을 문화적으로 내재화."},
-  {title:"McKinsey: \"인간 40,000 + AI 에이전트 20,000 = 맥킨지의 새 인력 구조\"",buzz:"🔷",summary:"McKinsey CEO: 18개월 만에 AI 에이전트 3,000→20,000으로 확대. 내부 플랫폼 Lilli가 에이전틱 오케스트레이터로 진화. 150만 시간 절약. 채용 면접에 '트랩 벡터'(AI 출력의 오류를 잡아내는 능력) 도입.",insight:"베이글코드 맥락: McKinsey가 '인간+에이전트 하이브리드 인력'을 공식화 — 베이글코드의 '인간 세계와 AI 세계의 계약' 철학이 글로벌 최정상 컨설팅 펌의 운영 모델과 정확히 일치."},
-  {title:"McKinsey MGI: \"에이전트·로봇·인간의 스킬 파트너십\" — $2.9T 기회",buzz:"🔷",summary:"워크플로우 재설계를 통해 미국에서만 $2.9조 가치 창출 가능. 일자리 대체가 아닌 '일의 내용 변화'. 기술 70%가 자동화·비자동화 업무 모두에 사용 — 스킬의 소멸이 아닌 적용 방식의 전환.",insight:"베이글코드 맥락: '도메인 가속' PI 키워드가 이 '스킬 적용 방식 전환'을 정확히 포착. 같은 도메인 전문성이 AI 레버리지를 통해 가속되는 구조."},
-  {title:"BCG: \"75% CEO가 AI 수석 의사결정자 자임 — AI 투자 2026년 2배 증가\"",buzz:"🔷",summary:"2,400명 임원 조사: CEO 75%가 AI 최고 의사결정자(작년 2배). 50%는 'AI 성과 못 내면 자리 위험'. 에이전트 AI에 전체 AI 투자의 30% 이상 배정. 트레일블레이저 CEO(15%)만이 직원 75%를 업스킬링.",insight:"베이글코드 맥락: 김준영 대표가 직접 AX 전략을 총괄하는 구조가 BCG가 말하는 '트레일블레이저 CEO' 모델과 부합. 15%의 선두 기업군에 위치."},
-  {title:"BCG: \"AI 전환은 곧 인력 전환\" — Work Reinvention은 CEO만 할 수 있다",buzz:"🔷",summary:"AI로 업무가 고가치 활동으로 이동하면서, 판단력·모델 출력 해석·시스템 오케스트레이션 역량이 핵심. 조직 중간에서는 이 전환 불가능 — 기존 구조·인센티브·파워 다이내믹스에 직접 충돌하기 때문에 반드시 CEO가 주도해야.",insight:"베이글코드 맥락: '임팩트 증폭' 핵심가치 + 공동대표 직접 주도 구조가 BCG가 제시하는 'CEO 주도 Work Reinvention'의 실현 형태. 중간 관리층이 아닌 최상위에서 문화 전환을 드라이브."}
+const GOSSIP=[
+{tag:"인물",title:"엔씨 김택진, AI 자회사 NC AI 대표 직접 겸임 결정",note:"개발 총괄에서 AI 총괄로 무게 중심 이동 시사"},
+{tag:"루머",title:"넷마블, 동남아 소셜카지노 스튜디오 인수 협상 중",note:"미확인. 동남아 시장 확대 전략의 일환으로 관측"},
+{tag:"사건",title:"Roblox, AI 생성 콘텐츠 저작권 소송 피소",note:"유저 제작 AI 콘텐츠의 저작권 귀속 문제가 본격 쟁점화"},
+{tag:"인물",title:"OpenAI CTO Mira Murati, 자체 AI 스타트업 설립 공식화",note:"기업용 AI 에이전트 플랫폼으로 Anthropic·OpenAI와 경쟁 구도"},
+{tag:"사고",title:"EA, 내부 AI 도구 오작동으로 미출시 게임 데이터 유출",note:"AI 거버넌스 부재가 실제 보안 사고로 이어진 사례"},
+{tag:"루머",title:"Valve, Steam에 AI 기반 게임 추천 에이전트 도입 준비 중",note:"미확인. SteamDB 코드에서 관련 문자열 발견 보고"},
+{tag:"사건",title:"일본 게임노동조합, AI 도입에 따른 인력 감축 반대 성명",note:"AI와 고용의 충돌이 게임 업계에서도 본격화"}
 ];
-
-const STEAM = [
-  {rank:1,name:"Dungeon Craftsman",rate:94.8,owners:"85K",score:112.3,tags:["Roguelike","Simulation","Indie"]},
-  {rank:2,name:"Signal Lost",rate:93.5,owners:"120K",score:110.8,tags:["Horror","Survival","Sci-fi"]},
-  {rank:3,name:"AutoFactory Deluxe",rate:93.1,owners:"210K",score:109.2,tags:["Automation","Simulation"]},
-  {rank:4,name:"Wandering Spirits",rate:93.8,owners:"65K",score:108.5,tags:["Adventure","RPG","Indie"]},
-  {rank:5,name:"Nova Drift: Rebirth",rate:93.2,owners:"340K",score:106.7,tags:["Roguelite","Shooter"]},
-  {rank:6,name:"Tiny Town Architect",rate:92.4,owners:"95K",score:105.9,tags:["City Builder","Casual"]},
-  {rank:7,name:"Blade Circuit",rate:92.1,owners:"180K",score:104.3,tags:["Action","Cyberpunk"]},
-  {rank:8,name:"Deep Harvest",rate:91.8,owners:"72K",score:103.6,tags:["Farming","Horror"]}
-];
-
-const NOTABLE = [
-  {name:"Dungeon Craftsman",desc:"던전 탐험형 대장장이 로그라이크",why:"1인 개발, 96% 긍정률, AI 절차적 생성"},
-  {name:"Signal Lost",desc:"AI 적응형 난이도 우주 공포",why:"플레이어 행동을 AI가 실시간 분석"},
-  {name:"AutoFactory Deluxe",desc:"자원 관리 자동화 퍼즐",why:"자동화 장르 강세 대표 타이틀"}
-];
-
-const TYPE_COLORS={"실리콘밸리":"#6366f1","글로벌게임사":"#f59e0b","국내IT":"#10b981","에이전트문화":"#f43f5e","참고":"#64748b"};
-const REL_COLORS={high:"#10b981",medium:"#f59e0b",low:"#64748b"};
-
-// Render news
-function renderNews(filter) {
-  const list = document.getElementById('news-list');
-  const items = filter === 'all' ? NEWS : NEWS.filter(n => n.type === filter);
-  list.innerHTML = items.map(n => `
-    <div class="card" style="border-left:3px solid ${TYPE_COLORS[n.type]}" onclick="this.querySelector('.card-detail').classList.toggle('open')">
-      <div class="card-header">
-        <span class="type-badge" style="background:${TYPE_COLORS[n.type]}">${n.type}</span>
-        <span class="rel-badge" style="background:${REL_COLORS[n.rel]}20;color:${REL_COLORS[n.rel]}">${n.rel.toUpperCase()}</span>
-        <span class="source">${n.source} · ${n.date}</span>
-      </div>
-      <div class="card-title">${n.title}</div>
-      <div class="card-detail">
-        <p class="card-insight">${n.insight}</p>
-        <div class="card-action">→ ${n.action}</div>
-      </div>
-    </div>
-  `).join('');
+const sf="'Inter','Noto Sans KR',sans-serif";
+function App(){
+const[ad,setAd]=useState(null);
+const[ei,setEi]=useState(null);
+return e("div",{style:{minHeight:"100vh"}},
+e("header",{style:{borderBottom:"3px double #1a1a1a",padding:"20px 16px 16px",maxWidth:960,margin:"0 auto"}},
+e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",fontFamily:sf,fontSize:11,color:"#888",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:12}},e("span",null,TODAY),e("span",null,EDITION)),
+e("h1",{style:{fontSize:32,fontWeight:700,letterSpacing:"-0.02em",lineHeight:1.1,fontFamily:sf}},"Dock-In-sight")),
+e("div",{style:{maxWidth:960,margin:"0 auto",padding:"0 16px 60px"}},
+e("div",{style:{padding:"28px 0",borderBottom:"1px solid #ddd"}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#888",marginBottom:10}},"SOUNDBITE"),
+e("p",{style:{fontSize:18,lineHeight:1.7,fontWeight:500}},HEADLINE)),
+e("nav",{style:{display:"flex",gap:0,borderBottom:"1px solid #ddd",fontFamily:sf,overflow:"auto"}},
+DESKS.map(function(d){return e("button",{key:d.id,onClick:function(){setAd(ad===d.id?null:d.id);setEi(null)},style:{flex:"1 0 auto",padding:"14px 16px",background:"none",border:"none",borderBottom:ad===d.id?"2px solid #1a1a1a":"2px solid transparent",fontFamily:"inherit",fontSize:12,fontWeight:ad===d.id?700:500,color:ad===d.id?"#1a1a1a":"#888",cursor:"pointer",transition:"all .2s",whiteSpace:"nowrap"}},d.name)})),
+e("div",{className:"cr-layout",style:{display:"flex",gap:32,alignItems:"flex-start"}},
+e("div",{style:{flex:1,minWidth:0}},
+DESKS.filter(function(d){return !ad||d.id===ad}).map(function(desk){return e("section",{key:desk.id,style:{padding:"32px 0 0"}},
+e("div",{style:{marginBottom:24,borderBottom:"1px solid #eee",paddingBottom:12}},
+e("h2",{style:{fontFamily:sf,fontSize:14,fontWeight:700,letterSpacing:"0.02em",marginBottom:2}},desk.name),
+e("p",{style:{fontFamily:sf,fontSize:11,color:"#aaa"}},desk.sub)),
+desk.items.map(function(item,idx){var ik=desk.id+"-"+idx;var isOpen=ei===ik;return e("article",{key:idx,onClick:function(){setEi(isOpen?null:ik)},style:{marginBottom:24,cursor:"pointer",paddingBottom:24,borderBottom:"1px solid #f0f0ee"}},
+e("p",{style:{fontFamily:sf,fontSize:11,color:"#aaa",marginBottom:6}},item.source+" — "+item.date),
+e("h3",{style:{fontSize:17,fontWeight:600,lineHeight:1.5,marginBottom:8,fontFamily:"'Noto Sans KR','Inter',sans-serif"}},item.title),
+e("p",{style:{fontSize:14,lineHeight:1.7,color:"#555"}},item.selection),
+isOpen?e("div",{style:{marginTop:14,padding:"14px 16px",background:"#F2F1ED",borderLeft:"2px solid #1a1a1a"}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"#888",marginBottom:6}},"Bagelcode Link"),
+e("p",{style:{fontSize:14,lineHeight:1.7,color:"#333"}},item.link)):null)}))}),
+e("footer",{style:{marginTop:40,paddingTop:20,borderTop:"1px solid #ddd",fontFamily:sf,fontSize:10,color:"#aaa",letterSpacing:"0.05em"}},
+e("p",null,"Dock-In-sight "+EDITION+" — "+TODAY),
+e("p",{style:{marginTop:4}},"Dock-In-sight OS"))),
+e("aside",{className:"cr-sidebar",style:{width:240,flexShrink:0,position:"sticky",top:16,alignSelf:"flex-start",borderLeft:"1px solid #ddd",paddingLeft:24,marginTop:32}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#888",marginBottom:16}},"Gossip"),
+GOSSIP.map(function(g,i){return e("div",{key:i,style:{marginBottom:18,paddingBottom:16,borderBottom:"1px solid #f0f0ee"}},
+e("p",{style:{fontFamily:sf,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"#aaa",marginBottom:4}},g.tag),
+e("p",{style:{fontFamily:"'Noto Sans KR','Inter',sans-serif",fontSize:13,fontWeight:600,lineHeight:1.5,marginBottom:4}},g.title),
+e("p",{style:{fontSize:12,lineHeight:1.5,color:"#888"}},g.note))})))));
 }
-
-// Render tech
-document.getElementById('tech-list').innerHTML = TECH.map(t => `
-  <div class="hn-item">
-    <span class="hn-buzz">${t.buzz}</span>
-    <div style="flex:1">
-      <div class="hn-title">${t.title}</div>
-      <div class="hn-summary">${t.summary}</div>
-      <div class="hn-insight">💡 ${t.insight}</div>
-    </div>
-  </div>
-`).join('');
-
-// Render steam table
-document.getElementById('steam-table').innerHTML = STEAM.map(g => `
-  <tr>
-    <td class="rank">${g.rank}</td>
-    <td style="font-weight:600">${g.name}</td>
-    <td style="color:var(--green)">${g.rate}%</td>
-    <td style="color:var(--dim)">${g.owners}</td>
-    <td class="score">${g.score}</td>
-    <td>${g.tags.map(t => `<span class="tag-sm">${t}</span>`).join(' ')}</td>
-  </tr>
-`).join('');
-
-// Render notable
-document.getElementById('notable-grid').innerHTML = NOTABLE.map(g => `
-  <div class="notable-card">
-    <strong>${g.name}</strong>
-    <p>${g.desc}</p>
-    <div class="notable-why">📌 ${g.why}</div>
-  </div>
-`).join('');
-
-// Tab switching
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
-
-// Filter switching
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderNews(btn.dataset.filter);
-  });
-});
-
-// Initial render
-renderNews('all');
+ReactDOM.render(e(App),document.getElementById("root"));
 </script>
 </body>
 </html>
