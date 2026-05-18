@@ -149,6 +149,7 @@ def main():
             print(f"  [WARN] 배포 실패: {e}")
     else:
         print("\n⏭ GAS_WEBHOOK_URL 미설정 — 배포 건너뜀")
+  send_slack_notification(filepath)
 
     # 발행 번호 증가
     save_issue_number(issue_num + 1)
