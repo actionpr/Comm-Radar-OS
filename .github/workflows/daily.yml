@@ -22,10 +22,13 @@ jobs:
           GAS_REDDIT_URL: ${{ secrets.GAS_REDDIT_URL }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python main.py
+      - name: Save report
+        run: |
+          cp dock-in-sight-*.html report.html 2>/dev/null || true
       - name: Commit updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .issue_number seen_articles.json
+          git add .issue_number seen_articles.json report.html
           git diff --staged --quiet || git commit -m "Dock-In-sight daily update [skip ci]"
           git push
