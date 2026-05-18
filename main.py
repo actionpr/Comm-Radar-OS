@@ -159,6 +159,20 @@ def main():
 
     return filepath
 
-
+def send_slack_notification(filepath: str):
+    """Slack으로 리포트 완성 알림"""
+    import requests
+    webhook_url = os.environ.get("SLACK_WEBHOOK_URL", "")
+    if not webhook_url:
+        print("  [SKIP] SLACK_WEBHOOK_URL 미설정")
+        return
+    try:
+        message = {
+            "text": f"Dock-In-sight #{load_issue_number() - 1:03d} 리포트가 생성되었습니다.\n파일: {filepath}"
+        }
+        requests.post(webhook_url, json=message, timeout=10)
+        print("  Slack 알림 발송 완료")
+    except Exception as e:
+        print(f"  [WARN] Slack 알림 실패: {e}")
 if __name__ == "__main__":
     main()
