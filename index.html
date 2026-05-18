@@ -3,160 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comm Radar #003 — 2026년 05월 18일</title>
+<title>Dock-In-sight</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+KR:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #242836;
-  --border: #2d3248;
-  --text: #e4e7ef;
-  --text-dim: #8b90a5;
-  --accent: #6366f1;
-  --accent2: #818cf8;
-  --green: #10b981;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --blue: #3b82f6;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Pretendard', -apple-system, system-ui, sans-serif; line-height: 1.6; }
-.container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
-
-/* Hero */
-.hero { text-align: center; padding: 48px 24px 32px; margin-bottom: 24px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.1));
-  border-radius: 16px; border: 1px solid var(--border); }
-.hero-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
-  padding: 4px 12px; border-radius: 99px; letter-spacing: 1px; margin-bottom: 12px; }
-.hero-title { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
-.hero-subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
-.hero-summary { text-align: left; max-width: 640px; margin: 0 auto; }
-.hero-item { padding: 8px 0; font-size: 15px; border-bottom: 1px solid var(--border); }
-.hero-item:last-child { border: none; }
-
-/* Stats */
-.stats-bar { display: flex; gap: 12px; margin-bottom: 24px; }
-.stat { flex: 1; background: var(--surface); border-radius: 12px; padding: 16px; text-align: center;
-  border: 1px solid var(--border); }
-.stat-num { display: block; font-size: 28px; font-weight: 800; color: var(--accent2); }
-.stat-label { font-size: 12px; color: var(--text-dim); }
-
-/* Tabs */
-.tab-nav { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border-radius: 12px;
-  padding: 4px; border: 1px solid var(--border); overflow-x: auto; }
-.tab-btn { flex: 1; padding: 10px 16px; background: none; border: none; color: var(--text-dim);
-  font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all .2s;
-  white-space: nowrap; }
-.tab-btn.active { background: var(--accent); color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* News Cards */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.card { background: var(--surface); border-radius: 12px; padding: 20px;
-  border: 1px solid var(--border); transition: transform .2s; }
-.card:hover { transform: translateY(-2px); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.badge { color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
-.relevance-dot { width: 8px; height: 8px; border-radius: 50%; }
-.rel-high { background: var(--green); }
-.rel-medium { background: var(--amber); }
-.rel-low { background: var(--text-dim); }
-.card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
-.card-insight { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
-.card-action { font-size: 12px; color: var(--accent2); font-weight: 600; }
-
-/* HN */
-.hn-list { display: flex; flex-direction: column; gap: 12px; }
-.hn-item { display: flex; gap: 14px; background: var(--surface); border-radius: 12px; padding: 16px;
-  border: 1px solid var(--border); }
-.hn-buzz { font-size: 24px; flex-shrink: 0; }
-.hn-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-.hn-summary { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
-.hn-insight { font-size: 12px; color: var(--accent2); }
-
-/* Steam */
-.steam-summary { background: var(--surface); border-radius: 12px; padding: 20px; margin-bottom: 16px;
-  border: 1px solid var(--border); }
-.steam-summary h3 { margin-bottom: 8px; }
-.hot-genres { margin-top: 10px; font-size: 13px; color: var(--amber); }
-.steam-table-wrap { overflow-x: auto; margin-bottom: 16px; }
-.steam-table { width: 100%; border-collapse: collapse; background: var(--surface);
-  border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
-.steam-table th { background: var(--surface2); padding: 10px 14px; font-size: 12px;
-  color: var(--text-dim); text-align: left; font-weight: 600; }
-.steam-table td { padding: 10px 14px; font-size: 13px; border-top: 1px solid var(--border); }
-.steam-table .rank { font-weight: 800; color: var(--accent2); }
-.steam-table .game-name { font-weight: 600; }
-.steam-table .tags { color: var(--text-dim); font-size: 12px; }
-.steam-table .score { font-weight: 700; color: var(--green); }
-.game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.game-card { background: var(--surface); border-radius: 10px; padding: 16px;
-  border: 1px solid var(--border); }
-.game-card strong { font-size: 14px; }
-.game-card p { font-size: 12px; color: var(--text-dim); margin: 4px 0; }
-.why-notable { font-size: 11px; color: var(--amber); }
-
-/* Reddit */
-.reddit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.reddit-card { background: var(--surface); border-radius: 12px; padding: 18px;
-  border: 1px solid var(--border); }
-.reddit-sub { font-size: 11px; color: var(--accent2); font-weight: 700; margin-bottom: 6px; }
-.reddit-card h4 { font-size: 14px; margin-bottom: 6px; }
-.reddit-summary { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
-.reddit-insight { font-size: 12px; color: var(--green); }
-
-/* Footer */
-.footer { text-align: center; padding: 32px 0 16px; color: var(--text-dim); font-size: 12px; }
-.footer-sub { margin-top: 4px; opacity: 0.6; }
-.empty { text-align: center; padding: 40px; color: var(--text-dim); }
-
-@media (max-width: 640px) {
-  .stats-bar { flex-wrap: wrap; }
-  .stat { min-width: calc(50% - 8px); }
-  .card-grid, .game-grid, .reddit-grid { grid-template-columns: 1fr; }
-  .hero-title { font-size: 24px; }
-}
+*{box-sizing:border-box;margin:0;padding:0}
+::selection{background:#1a1a1a;color:#FAFAF8}
+body{font-family:'Source Serif 4','Noto Serif KR',Georgia,serif;background:#FAFAF8;color:#1a1a1a}
+a.src-link{color:#888;text-decoration:none;border-bottom:1px dotted #bbb;transition:color .2s}
+a.src-link:hover{color:#1a1a1a;border-bottom-color:#1a1a1a}
+@media(max-width:900px){.cr-layout{flex-direction:column!important}.cr-sidebar{position:static!important;width:100%!important;border-left:none!important;border-top:1px solid #ddd!important;padding-top:24px!important;margin-top:24px!important;padding-left:0!important}}
 </style>
 </head>
 <body>
-<div class="container">
-
-<header class="hero">
-  <div class="hero-badge">ISSUE #003</div>
-  <h1 class="hero-title">📡 Comm Radar</h1>
-  <p class="hero-subtitle">Weekly Communication Intelligence · 2026년 05월 18일</p>
-  <div class="hero-summary"><div class="hero-item">📊 이번 주 리포트를 확인하세요.</div></div>
-</header>
-<div class="stats-bar"></div>
-
-<nav class="tab-nav">
-  <button class="tab-btn active" data-tab="news">📰 뉴스 인사이트</button>
-  <button class="tab-btn" data-tab="tech">🔶 테크 담론</button>
-  <button class="tab-btn" data-tab="steam">🎮 게임 트렌드</button>
-  
-</nav>
-
-<div class="tab-content active" id="tab-news"><div class="empty">뉴스 데이터가 없습니다.</div></div>
-<div class="tab-content" id="tab-tech"><div class="empty">Hacker News 데이터가 없습니다.</div></div>
-<div class="tab-content" id="tab-steam"><div class="empty">Steam 데이터가 없습니다.</div></div>
-
-
-<footer class="footer">
-  <p>Comm Radar #003 · 2026년 05월 18일 · Bagelcode Communication Intelligence OS</p>
-  <p class="footer-sub">Powered by Claude API · 자동 생성 리포트</p>
-</footer>
-</div>
+<div id="root"></div>
 <script>
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
+var e=React.createElement,useState=React.useState;
+var TODAY="Fri, May 16, 2026 \u26c5 24\u00b0",EDITION="No. 042";
+var HEADLINE="AI \uc5d0\uc774\uc804\ud2b8 \ub3c4\uc785\ub960\uc774 \ud3ed\ubc1c\uc801\uc73c\ub85c \uc62c\ub77c\uac00\ub294 \ub9cc\ud07c, \uc870\uc9c1\ubb38\ud654\uac00 \uae30\uc220\uc744 \ub530\ub77c\uac00\uc9c0 \ubabb\ud558\ub294 'Culture Drift'\uac00 2026\ub144\uc758 \uc9c4\uc9dc \uc804\uc7c1\ud130\ub2e4.";
+var DESKS=[
+{id:"market",name:"Market",sub:"\uac8c\uc784\u00b7\ud14c\ud06c \ube44\uc988\ub2c8\uc2a4 \ub3d9\ud5a5",items:[
+{title:"\ud06c\ub798\ud504\ud1a4, \uc790\uccb4 AI \ubaa8\ub378 '\ub77c\uc628' \uc624\ud508\uc18c\uc2a4 \uacf5\uac1c",source:"\ud06c\ub798\ud504\ud1a4 \uacf5\uc2dd \ubc1c\ud45c",date:"2026.04.02",url:"https://news.nate.com/view/20260408n42083",selection:"'AI \ud37c\uc2a4\ud2b8' \uc804\ud658 \uc120\uc5b8 \uc774\ud6c4 \uc790\uccb4 \ud30c\uc6b4\ub370\uc774\uc158 \ubaa8\ub378\uae4c\uc9c0 \uad6c\ucd95\ud55c \uad6d\ub0b4 \uac8c\uc784\uc0ac \ucd5c\ucd08 \uc0ac\ub840. \uc74c\uc131\u00b7\ube44\uc804\u00b7TTS 4\uc885, 1,000\uc5b5\uc6d0 \uc774\uc0c1 \ud22c\uc790 \uaddc\ubaa8.",link:"\ud06c\ub798\ud504\ud1a4\uc740 '\ubaa8\ub378 \uac1c\ubc1c' \uc911\uc2ec, \ubca0\uc774\uae00\ucf54\ub4dc\ub294 '\uc870\uc9c1\ubb38\ud654 \uc804\ud658' \uc911\uc2ec. \uac19\uc740 AI \uc804\ud658\uc774\uc9c0\ub9cc \uc804\ub7b5\uc801 \uacb0\uc774 \ub2e4\ub974\ub2e4."},
+{title:"Anthropic, \ube44\uc988\ub2c8\uc2a4 \uace0\uac1d \uc810\uc720\uc728 OpenAI \uccab \ucd94\uc6d4",source:"TechCrunch",date:"2026.05.13",url:"https://techcrunch.com/2026/05/13/anthropics-cat-wu-says-that-in-the-future-ai-will-anticipate-your-needs-before-you-know-what-they-are/",selection:"\uae30\uc5c5\uac00\uce58 $9,500\uc5b5 \ucd94\uc815. Claude\uac00 \ube44\uc988\ub2c8\uc2a4 \uc2dc\uc7a5\uc5d0\uc11c GPT\ub97c \uc5ed\uc804\ud55c \uccab \ub370\uc774\ud130. API \ud2b8\ub798\ud53d \uc804\ub144 \ub300\ube44 17\ubc30 \uc131\uc7a5.",link:"\ubca0\uc774\uae00\ucf54\ub4dc\uc758 Claude \ucc44\ud0dd\uc774 '\uc804\ub7b5\uc801\uc73c\ub85c \uc815\ud655\ud588\ub2e4'\ub294 \uc2dc\uc7a5 \uac80\uc99d. IR \ucee4\ubba4\ub2c8\ucf00\uc774\uc158\uc5d0\uc11c \ud65c\uc6a9 \uac00\uce58\uac00 \ub192\ub2e4."},
+{title:"\uba54\uac00\uc874\ud074\ub77c\uc6b0\ub4dc, \uba40\ud2f0 \uc5d0\uc774\uc804\ud2b8 \ud1b5\ud569 \uad00\ub9ac \uc0ac\uc5c5 \uc120\uc5b8",source:"\uad6d\ubbfc\uc77c\ubcf4 \u00b7 \uc774\ucf54\ub178\ubbf8\ub9ac\ubdf0",date:"2026.05.14",url:"https://www.kmib.co.kr/article/view.asp?arcid=1778744149",selection:"\uad6d\ub0b4 \ucd5c\ub300 MSP\uac00 AI \uc624\ucf00\uc2a4\ud2b8\ub808\uc774\ud130 \uc5ed\ud560 \ud45c\ubc29. JB\uc6b0\ub9ac\uce90\ud53c\ud0c8 \uc5ec\uc2e0 \uc2ec\uc0ac \uc5d0\uc774\uc804\ud2b8\ub85c \uc5c5\ubb34 \uc2dc\uac04 80% \ub2e8\ucd95. IPO \uc900\ube44 \ubcf8\uaca9\ud654.",link:"\uad6d\ub0b4 AI \uc5d0\uc774\uc804\ud2b8 \uc0dd\ud0dc\uacc4\uac00 \ubcf8\uaca9 \ud615\uc131 \uc911. \ubca0\uc774\uae00\ucf54\ub4dc\ub294 \uc774 \uc0dd\ud0dc\uacc4\uc5d0\uc11c '\uace0\uac1d'\uc774 \uc544\ub2cc '\uc120\ub3c4 \uc0ac\uc6a9\uc790'\ub85c \uc704\uce58."}
+]},
+{id:"indie",name:"Indie",sub:"Steam\u00b7Reddit \uc778\ub514 \uac8c\uc784",items:[
+{title:"Dungeon Craftsman, 1\uc778 \uac1c\ubc1c \uae0d\uc815\ub960 94.8%",source:"SteamSpy \u00b7 Reddit r/gaming (\ub313\uae00 1,200+)",date:"2026.05",url:"https://store.steampowered.com",selection:"\ub358\uc804 \ud0d0\ud5d8\ud615 \ub300\uc7a5\uc7a5\uc774 \ub85c\uadf8\ub77c\uc774\ud06c. AI \uc808\ucc28\uc801 \uc0dd\uc131\uc73c\ub85c \ubb34\ud55c \ub358\uc804 \uad6c\ud604. \uc18c\uaddc\ubaa8 \ud300\uc758 \ud55c\uacc4\ub97c \ub3cc\ud30c\ud55c \uc0ac\ub840.",link:"1\uc778 \uac1c\ubc1c\uc790\uac00 AI\ub85c AAA\uae09 \ucf58\ud150\uce20 \ubcfc\ub968 \ub2ec\uc131. GameBakery.ai\uc758 '\uc18c\uaddc\ubaa8 \ud300 \uc5ed\ub7c9 \uc99d\ud3ed'\uacfc \uc9c1\uacb0\ub418\ub294 \uc2dc\uc7a5 \uac80\uc99d."},
+{title:"Signal Lost, AI \uc801\uc751\ud615 \ub09c\uc774\ub3c4\ub85c Reddit \ud654\uc81c",source:"SteamSpy \u00b7 Reddit r/truegaming (\ub313\uae00 800+)",date:"2026.05",url:"https://www.reddit.com/r/truegaming",selection:"\ud50c\ub808\uc774\uc5b4 \ud589\ub3d9\uc744 AI\uac00 \uc2e4\uc2dc\uac04 \ubd84\uc11d\ud558\uc5ec \ub09c\uc774\ub3c4 \uc870\uc808. \uc6b0\uc8fc \uc815\uac70\uc7a5 \uacf5\ud3ec \uc0dd\uc874. \uae0d\uc815\ub960 93.5%.",link:"AI\uac00 \uac8c\uc784\ud50c\ub808\uc774\uc758 \ud575\uc2ec \uba54\ucee4\ub2c8\uc998\uc774 \ub41c \uc0ac\ub840. \uac1c\ubc1c \ub3c4\uad6c\ub97c \ub118\uc5b4 \uac8c\uc784 \uacbd\ud5d8\uc758 \ud575\uc2ec\uc73c\ub85c \ud655\uc7a5\ud558\ub294 \ud2b8\ub80c\ub4dc."},
+{title:"AutoFactory Deluxe, \uc790\ub3d9\ud654 \uc7a5\ub974 \uc18c\uc720\uc790 \uae09\uc131\uc7a5",source:"SteamSpy \u00b7 Reddit r/gamingsuggestions (\ub313\uae00 600+)",date:"2026.05",url:"https://www.reddit.com/r/gamingsuggestions",selection:"\uc790\uc6d0 \uad00\ub9ac \uc790\ub3d9\ud654 \ud37c\uc990 \uc2dc\ubbac\ub808\uc774\ud130. '\ucd5c\uc801\ud654'\uc640 '\uc2dc\uc2a4\ud15c \uc124\uacc4'\uac00 \ud575\uc2ec \uc7ac\ubbf8\uc778 \uc7a5\ub974\uc758 \uafb8\uc900\ud55c \uc131\uc7a5.",link:"\uc790\ub3d9\ud654 \uc7a5\ub974\uc758 \uc778\uae30\ub294 \ud604\uc2e4\uc758 AI \uc790\ub3d9\ud654 \uad00\uc2ec\uacfc \ubcd1\ud589. \uac8c\uc784\uc774 \uae30\uc220 \ud2b8\ub80c\ub4dc\ub97c \ubc18\uc601\ud558\ub294 \ubb38\ud654\uc801 \uc2dc\uadf8\ub110."}
+]},
+{id:"contents",name:"Contents",sub:"\ucf58\ud150\uce20 \ud2b8\ub80c\ub4dc \ubcc0\ud654",items:[
+{title:"TikTok, 10\ubd84 \uc601\uc0c1 \ube44\uc911 40% \ub3cc\ud30c",source:"Social Media Today \u00b7 X Trending",date:"2026.05",url:"https://www.socialmediatoday.com",selection:"15\ucd08\uc5d0\uc11c \uc2dc\uc791\ud55c TikTok\uc774 10\ubd84\uae4c\uc9c0 \ud655\uc7a5. \uc21f\ud3fc vs \ub871\ud3fc \uc774\ubd84\ubc95\uc774 \ubb34\ub108\uc9c0\uace0, \ucf58\ud150\uce20 \uae38\uc774\ubcf4\ub2e4 '\ubab0\uc785 \uad6c\uc870'\uac00 \ud575\uc2ec\uc73c\ub85c \ubd80\uc0c1.",link:"\uc18c\uc15c \uce74\uc9c0\ub178 \ub9c8\ucf00\ud305 \ud3ec\ub9f7\ub3c4 \uc774 \ud750\ub984 \uc548\uc5d0 \uc788\ub2e4. 15\ucd08 \uad11\uace0\uc5d0\uc11c \uc2a4\ud1a0\ub9ac\ud615 \ubbf8\ub4dc\ud3fc \ucf58\ud150\uce20\ub85c\uc758 \uc804\ud658 \uac80\ud1a0 \uc2dc\uc810."},
+{title:"\ud558\uc774\ud37c\uce90\uc8fc\uc5bc \uc2dc\uc7a5 \uc815\uccb4, \ud558\uc774\ube0c\ub9ac\ub4dc \uce90\uc8fc\uc5bc\ub85c \uc804\ud658",source:"Pocket Gamer \u00b7 GamesBeat",date:"2026.05",url:"https://www.pocketgamer.biz",selection:"\uad11\uace0 \uc218\uc775 \uc758\uc874 \ubaa8\ub378\uc774 \ud55c\uacc4\uc5d0 \ub3c4\ub2ec. IAP+\uad11\uace0 \ud63c\ud569\uc758 \ud558\uc774\ube0c\ub9ac\ub4dc \uce90\uc8fc\uc5bc\uc774 \uc2e0\uaddc \ud45c\uc900\uc73c\ub85c \uc790\ub9ac\uc7a1\ub294 \uc911.",link:"\uc18c\uc15c \uce74\uc9c0\ub178\uc758 F2P \uc6b4\uc601 \uacbd\ud5d8\uc774 \ud558\uc774\ube0c\ub9ac\ub4dc \uce90\uc8fc\uc5bc\uc5d0\uc11c \uac15\uc810\uc774 \ub420 \uc218 \uc788\ub2e4. \uc218\uc775 \ubaa8\ub378 \ub2e4\uac01\ud654 \uad00\uc810\uc5d0\uc11c \ubaa8\ub2c8\ud130\ub9c1 \ud544\uc694."},
+{title:"Threads, MAU 3\uc5b5 \ub3cc\ud30c",source:"The Verge \u00b7 Threads \uacf5\uc2dd",date:"2026.05",url:"https://www.theverge.com",selection:"X \ub300\uc548\uc73c\ub85c \ucd9c\ubc1c\ud55c Threads\uac00 \ud14c\ud06c\u00b7\ube44\uc988\ub2c8\uc2a4 \ub2f4\ub860\uc758 \uc0c8 \uac70\uc810\uc73c\ub85c \ubd80\uc0c1. \uae30\uc5c5 \ucee4\ubba4\ub2c8\ucf00\uc774\uc158 \ucc44\ub110\ub85c\uc11c\uc758 \uac00\uce58 \uc0c1\uc2b9.",link:"\ubca0\uc774\uae00\ucf54\ub4dc Threads \uacc4\uc815 \uc6b4\uc601 \uc804\ub7b5 \uac80\ud1a0 \uc2dc\uc810. AX \uc0ac\ub840 \uacf5\uc720 \ucc44\ub110\ub85c \uc801\ud569."}
+]},
+{id:"org",name:"Culture",sub:"AX \uc804\ub7b5\u00b7\uc77c\ud558\ub294 \ubc29\uc2dd\u00b7\ub9ac\ub354\uc2ed",items:[
+{title:"McKinsey, \uc778\ub825 \uad6c\uc870\ub97c \uc778\uac04 4\ub9cc+\uc5d0\uc774\uc804\ud2b8 2\ub9cc\uc73c\ub85c \uc7ac\uc815\uc758",source:"McKinsey CEO \ubc1c\ud45c",date:"2026.03",url:"https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-rise-of-the-human-ai-workforce",selection:"18\uac1c\uc6d4 \ub9cc\uc5d0 AI \uc5d0\uc774\uc804\ud2b8 3,000\uc5d0\uc11c 20,000\uc73c\ub85c \ud655\ub300. Lilli\uac00 \uc5d0\uc774\uc804\ud2f1 \uc624\ucf00\uc2a4\ud2b8\ub808\uc774\ud130\ub85c \uc9c4\ud654. \ucc44\uc6a9 \uba74\uc811\uc5d0 AI \uc624\ub958 \ud0d0\uc9c0 \ub2a5\ub825 \ud14c\uc2a4\ud2b8 \ub3c4\uc785.",link:"\ubca0\uc774\uae00\ucf54\ub4dc\uc758 '\uc778\uac04 \uc138\uacc4\uc640 AI \uc138\uacc4\uc758 \uacc4\uc57d' \ucca0\ud559\uc774 \uae00\ub85c\ubc8c \ucd5c\uc815\uc0c1 \ucee8\uc124\ud305 \ud380\uc758 \uc6b4\uc601 \ubaa8\ub378\uacfc \ub3d9\uc77c\ud55c \uad6c\uc870."},
+{title:"BCG, CEO 75%\uac00 AI \uc218\uc11d \uc758\uc0ac\uacb0\uc815\uc790 \u2014 \ud2b8\ub808\uc77c\ube14\ub808\uc774\uc800\ub294 15%",source:"BCG 2026 AI Report",date:"2026.01",url:"https://www.bcg.com/publications/2026/as-ai-investments-surge-ceos-take-the-lead",selection:"2,400\uba85 \uc784\uc6d0 \uc870\uc0ac. AI \ud22c\uc790 2\ubc30 \uc99d\uac00, \uc5d0\uc774\uc804\ud2b8\uc5d0 \uc804\uccb4 \uc608\uc0b0 30% \uc774\uc0c1. \uc9c1\uc6d0 75% \uc5c5\uc2a4\ud0ac\ub9c1\ud55c CEO\ub294 15%\ubfd0.",link:"\uae40\uc900\uc601 \ub300\ud45c\uac00 \uc9c1\uc811 AX\ub97c \ucd1d\uad04\ud558\uace0 \uc804\uc0ac \uc5c5\uc2a4\ud0ac\ub9c1\uc744 \uc8fc\ub3c4\ud558\ub294 \uad6c\uc870\ub294 BCG \uae30\uc900 \ud2b8\ub808\uc77c\ube14\ub808\uc774\uc800 15%\uc5d0 \ud574\ub2f9."},
+{title:"LG\ud5ec\ub85c\ube44\uc804, \uc0ac\ub0b4 AI \uc5d0\uc774\uc804\ud2b8 \ud574\ucee4\ud1a4 203\uba85 \ucc38\uc5ec",source:"\uba38\ub2c8\ud22c\ub370\uc774",date:"2026.05.13",url:"https://www.mt.co.kr/tech/2026/05/13/2026051308071644068",selection:"'AX \ubb38\ud654 \uc815\ucc29\uc758 \uc911\uc694\ud55c \uae30\uc810'. \ub300\uc0c1\uc791\uc740 \ub9c8\ucf00\ud305 \uc2e4\uc2dc\uac04 \ud3ec\ucc29 \uc5d0\uc774\uc804\ud2b8. 83\uac1c \uacfc\uc81c \uc81c\ucd9c.",link:"\ubca0\uc774\uae00\ucf54\ub4dc AI Jam\uacfc \ub3d9\uc77c\ud55c \uc811\uadfc\uc774\ub098, \ubca0\uc774\uae00\ucf54\ub4dc\ub294 2023\ub144\ubd80\ud130\uc758 \uada4\uc801\uc774 \uc788\ub2e4. \uc2dc\uc791\uc810\uc774 2~3\ub144 \uc55e\uc120\ub2e4."},
+{title:"HBR, AI \uc5d0\uc774\uc804\ud2b8 \uc758\uc778\ud654\uac00 \uc131\uacfc\ub97c \ub5a8\uc5b4\ub728\ub9b0\ub2e4\ub294 \uc2e4\ud5d8 \uacb0\uacfc",source:"Harvard Business Review \u00b7 BCG\u00b7\ubcf4\uc2a4\ud134\ub300",date:"2026.05",url:"https://hbr.org/2026/05/research-why-you-shouldnt-treat-ai-agents-like-employees",selection:"AI\ub97c \uc758\uc778\ud654\ud558\uba74 \ucc45\uc784\uac10 \ud558\ub77d, \ubd88\ud544\uc694\ud55c \uc5d0\uc2a4\ucec0\ub808\uc774\uc158 \uc99d\uac00, \ub9ac\ubdf0 \ud488\uc9c8 \uc800\ud558. \uba85\ud655\ud55c \uc5ed\ud560\uc758 \ud30c\ud2b8\ub108\ub85c \ud504\ub808\uc774\ubc0d\ud574\uc57c.",link:"\ubca0\uc774\uae00\ucf54\ub4dc\uc758 '\uacc4\uc57d\uc744 \ud1b5\ud55c \ud611\uc5c5' \ucca0\ud559\uc774 \uc774 \uc5f0\uad6c \uacb0\ub860\uacfc \uc815\ud655\ud788 \uc77c\uce58."},
+{title:"HBR, AI \uc804\ud658\uc758 \ubcd1\ubaa9\uc740 \ubaa8\ub378\uc774 \uc544\ub2cc \uc870\uc9c1 \uc6b4\uc601 \ubaa8\ub378",source:"Harvard Business Review \u00b7 HBS + Microsoft",date:"2026.03",url:"https://hbr.org/2026/03/the-last-mile-problem-slowing-ai-transformation",selection:"AI \uc804\ud658\uc774 \uba48\ucd94\ub294 \uc9c4\uc9dc \uc9c0\uc810\uc740 \uae30\uc220\uc801 \uc131\uacfc\ub97c \uc870\uc9c1 \uc6b4\uc601 \ubaa8\ub378\ub85c \uc804\ud658\ud558\ub294 \ub9c8\uc9c0\ub9c9 \uad6c\uac04.",link:"Agent-Driven OS, AI Jam, \ud575\uc2ec\uac00\uce58 \uccb4\uacc4\uac00 \uc774 Last Mile\uc744 \ub3cc\ud30c\ud558\uae30 \uc704\ud55c \uc7a5\uce58\ub4e4."},
+{title:"WRITER, AI \ub3c4\uc785 \uae30\uc5c5 54%\uac00 '\uc870\uc9c1\uc744 \ucc22\uc5b4\ub193\uace0 \uc788\ub2e4'\uace0 \uc751\ub2f5",source:"WRITER \u00b7 Workplace Intelligence",date:"2026.05",url:"https://writer.com/blog/enterprise-ai-adoption-2026/",selection:"\uc288\ud37c\uc720\uc800 5\ubc30 \uc0dd\uc0b0\uc131\uc774 \uc870\uc9c1 ROI\ub85c \uc804\ud658 \uc548 \ub418\ub294 \uad6c\uc870\uc801 \ub2e8\uc808. 5\uac00\uc9c0 \uc2e4\ud328 \ud328\ud134 \ub3c4\ucd9c.",link:"AI Jam\uacfc \ud0c0\uc6b4\ud640\uc774 \uc288\ud37c\uc720\uc800 \uc131\uacfc\ub97c \uc870\uc9c1\uc73c\ub85c \uc804\ud30c\ud558\ub294 \uc2dc\uc2a4\ud15c. 5\uac00\uc9c0 \uc2e4\ud328 \ud328\ud134\uc744 \uad6c\uc870\uc801\uc73c\ub85c \ubc29\uc9c0."}
+]}
+];
+var GOSSIP=[
+{tag:"\uc778\ubb3c",title:"\uc5d4\uc528 \uae40\ud0dd\uc9c4, AI \uc790\ud68c\uc0ac NC AI \ub300\ud45c \uc9c1\uc811 \uacb8\uc784 \uacb0\uc815",note:"\uac1c\ubc1c \ucd1d\uad04\uc5d0\uc11c AI \ucd1d\uad04\ub85c \ubb34\uac8c \uc911\uc2ec \uc774\ub3d9 \uc2dc\uc0ac"},
+{tag:"\ub8e8\uba38",title:"\ub137\ub9c8\ube14, \ub3d9\ub0a8\uc544 \uc18c\uc15c\uce74\uc9c0\ub178 \uc2a4\ud29c\ub514\uc624 \uc778\uc218 \ud611\uc0c1 \uc911",note:"\ubbf8\ud655\uc778. \ub3d9\ub0a8\uc544 \uc2dc\uc7a5 \ud655\ub300 \uc804\ub7b5\uc758 \uc77c\ud658\uc73c\ub85c \uad00\uce21"},
+{tag:"\uc0ac\uac74",title:"Roblox, AI \uc0dd\uc131 \ucf58\ud150\uce20 \uc800\uc791\uad8c \uc18c\uc1a1 \ud53c\uc18c",note:"\uc720\uc800 \uc81c\uc791 AI \ucf58\ud150\uce20\uc758 \uc800\uc791\uad8c \uadc0\uc18d \ubb38\uc81c\uac00 \ubcf8\uaca9 \uc7c1\uc810\ud654"},
+{tag:"\uc778\ubb3c",title:"OpenAI CTO Mira Murati, \uc790\uccb4 AI \uc2a4\ud0c0\ud2b8\uc5c5 \uc124\ub9bd \uacf5\uc2dd\ud654",note:"\uae30\uc5c5\uc6a9 AI \uc5d0\uc774\uc804\ud2b8 \ud50c\ub7ab\ud3fc\uc73c\ub85c Anthropic\u00b7OpenAI\uc640 \uacbd\uc7c1 \uad6c\ub3c4"},
+{tag:"\uc0ac\uace0",title:"EA, \ub0b4\ubd80 AI \ub3c4\uad6c \uc624\uc791\ub3d9\uc73c\ub85c \ubbf8\ucd9c\uc2dc \uac8c\uc784 \ub370\uc774\ud130 \uc720\ucd9c",note:"AI \uac70\ubc84\ub10c\uc2a4 \ubd80\uc7ac\uac00 \uc2e4\uc81c \ubcf4\uc548 \uc0ac\uace0\ub85c \uc774\uc5b4\uc9c4 \uc0ac\ub840"},
+{tag:"\ub8e8\uba38",title:"Valve, Steam\uc5d0 AI \uae30\ubc18 \uac8c\uc784 \ucd94\ucc9c \uc5d0\uc774\uc804\ud2b8 \ub3c4\uc785 \uc900\ube44 \uc911",note:"\ubbf8\ud655\uc778. SteamDB \ucf54\ub4dc\uc5d0\uc11c \uad00\ub828 \ubb38\uc790\uc5f4 \ubc1c\uacac \ubcf4\uace0"},
+{tag:"\uc0ac\uac74",title:"\uc77c\ubcf8 \uac8c\uc784\ub178\ub3d9\uc870\ud569, AI \ub3c4\uc785\uc5d0 \ub530\ub978 \uc778\ub825 \uac10\ucd95 \ubc18\ub300 \uc131\uba85",note:"AI\uc640 \uace0\uc6a9\uc758 \ucda9\ub3cc\uc774 \uac8c\uc784 \uc5c5\uacc4\uc5d0\uc11c\ub3c4 \ubcf8\uaca9\ud654"}
+];
+var sf="'Inter','Noto Sans KR',sans-serif";
+function App(){
+var s=useState(null),ad=s[0],setAd=s[1];
+var s2=useState(null),ei=s2[0],setEi=s2[1];
+return e("div",{style:{minHeight:"100vh"}},
+e("header",{style:{borderBottom:"3px double #1a1a1a",padding:"20px 16px 16px",maxWidth:960,margin:"0 auto"}},
+e("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"baseline",fontFamily:sf,fontSize:11,color:"#888",letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:12}},e("span",null,TODAY),e("span",null,EDITION)),
+e("h1",{style:{fontSize:32,fontWeight:700,letterSpacing:"-0.02em",lineHeight:1.1,fontFamily:sf}},"Dock-In-sight")),
+e("div",{style:{maxWidth:960,margin:"0 auto",padding:"0 16px 60px"}},
+e("div",{style:{padding:"28px 0",borderBottom:"1px solid #ddd"}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#888",marginBottom:10}},"SOUNDBITE"),
+e("p",{style:{fontSize:18,lineHeight:1.7,fontWeight:500}},HEADLINE)),
+e("nav",{style:{display:"flex",gap:0,borderBottom:"1px solid #ddd",fontFamily:sf,overflow:"auto"}},
+DESKS.map(function(d){return e("button",{key:d.id,onClick:function(){setAd(ad===d.id?null:d.id);setEi(null)},style:{flex:"1 0 auto",padding:"14px 16px",background:"none",border:"none",borderBottom:ad===d.id?"2px solid #1a1a1a":"2px solid transparent",fontFamily:"inherit",fontSize:12,fontWeight:ad===d.id?700:500,color:ad===d.id?"#1a1a1a":"#888",cursor:"pointer",transition:"all .2s",whiteSpace:"nowrap"}},d.name)})),
+e("div",{className:"cr-layout",style:{display:"flex",gap:32,alignItems:"flex-start"}},
+e("div",{style:{flex:1,minWidth:0}},
+DESKS.filter(function(d){return !ad||d.id===ad}).map(function(desk){return e("section",{key:desk.id,style:{padding:"32px 0 0"}},
+e("div",{style:{marginBottom:24,borderBottom:"1px solid #eee",paddingBottom:12}},
+e("h2",{style:{fontFamily:sf,fontSize:14,fontWeight:700,letterSpacing:"0.02em",marginBottom:2}},desk.name),
+e("p",{style:{fontFamily:sf,fontSize:11,color:"#aaa"}},desk.sub)),
+desk.items.map(function(item,idx){var ik=desk.id+"-"+idx;var isOpen=ei===ik;return e("article",{key:idx,onClick:function(ev){if(ev.target.tagName==="A")return;setEi(isOpen?null:ik)},style:{marginBottom:24,cursor:"pointer",paddingBottom:24,borderBottom:"1px solid #f0f0ee"}},
+e("p",{style:{fontFamily:sf,fontSize:11,color:"#aaa",marginBottom:6}},item.url?e("a",{href:item.url,target:"_blank",rel:"noopener",className:"src-link",onClick:function(ev){ev.stopPropagation()}},item.source+" \u2197"):item.source," \u2014 ",item.date),
+e("h3",{style:{fontSize:17,fontWeight:600,lineHeight:1.5,marginBottom:8,fontFamily:"'Noto Sans KR','Inter',sans-serif"}},item.title),
+e("p",{style:{fontSize:14,lineHeight:1.7,color:"#555"}},item.selection),
+isOpen?e("div",{style:{marginTop:14,padding:"14px 16px",background:"#F2F1ED",borderLeft:"2px solid #1a1a1a"}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"#888",marginBottom:6}},"Bagelcode Link"),
+e("p",{style:{fontSize:14,lineHeight:1.7,color:"#333"}},item.link)):null)}))}),
+e("footer",{style:{marginTop:40,paddingTop:20,borderTop:"1px solid #ddd",fontFamily:sf,fontSize:10,color:"#aaa",letterSpacing:"0.05em"}},
+e("p",null,"Dock-In-sight "+EDITION+" \u2014 "+TODAY),
+e("p",{style:{marginTop:4}},"Dock-In-sight OS"))),
+e("aside",{className:"cr-sidebar",style:{width:240,flexShrink:0,position:"sticky",top:16,alignSelf:"flex-start",borderLeft:"1px solid #ddd",paddingLeft:24,marginTop:32}},
+e("p",{style:{fontFamily:sf,fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.12em",color:"#888",marginBottom:16}},"Gossip"),
+GOSSIP.map(function(g,i){return e("div",{key:i,style:{marginBottom:18,paddingBottom:16,borderBottom:"1px solid #f0f0ee"}},
+e("p",{style:{fontFamily:sf,fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.1em",color:"#aaa",marginBottom:4}},g.tag),
+e("p",{style:{fontFamily:"'Noto Sans KR','Inter',sans-serif",fontSize:13,fontWeight:600,lineHeight:1.5,marginBottom:4}},g.title),
+e("p",{style:{fontSize:12,lineHeight:1.5,color:"#888"}},g.note))})))));
+}
+ReactDOM.render(e(App),document.getElementById("root"));
 </script>
 </body>
 </html>
