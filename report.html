@@ -3,160 +3,490 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Comm Radar #007 — 2026년 05월 19일</title>
+<title>Comm Radar #008 — 2026.05.19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Lora:ital,wght@0,400;0,600;1,400&family=Noto+Serif+KR:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0f1117;
-  --surface: #1a1d27;
-  --surface2: #242836;
-  --border: #2d3248;
-  --text: #e4e7ef;
-  --text-dim: #8b90a5;
-  --accent: #6366f1;
-  --accent2: #818cf8;
-  --green: #10b981;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --blue: #3b82f6;
+  --bg: #FDFBF7;
+  --surface: #FFFFFF;
+  --border: #D4C5B0;
+  --border-light: #E8E0D4;
+  --text: #2B2B2B;
+  --text-dim: #6B6B6B;
+  --text-muted: #999;
+  --navy: #1B2A4A;
+  --gold: #8B6914;
+  --gold-light: #C4A24E;
+  --desk-market: #1B2A4A;
+  --desk-indie: #4A6741;
+  --desk-contents: #6B4226;
+  --desk-culture: #5A3E6B;
+  --tag-high: #1B2A4A;
+  --tag-medium: #8B6914;
+  --tag-low: #999;
 }
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: var(--bg); color: var(--text); font-family: 'Pretendard', -apple-system, system-ui, sans-serif; line-height: 1.6; }
-.container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
 
-/* Hero */
-.hero { text-align: center; padding: 48px 24px 32px; margin-bottom: 24px;
-  background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(16,185,129,0.1));
-  border-radius: 16px; border: 1px solid var(--border); }
-.hero-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
-  padding: 4px 12px; border-radius: 99px; letter-spacing: 1px; margin-bottom: 12px; }
-.hero-title { font-size: 32px; font-weight: 800; margin-bottom: 4px; }
-.hero-subtitle { color: var(--text-dim); font-size: 14px; margin-bottom: 20px; }
-.hero-summary { text-align: left; max-width: 640px; margin: 0 auto; }
-.hero-item { padding: 8px 0; font-size: 15px; border-bottom: 1px solid var(--border); }
-.hero-item:last-child { border: none; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Lora', 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+  line-height: 1.75;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* Stats */
-.stats-bar { display: flex; gap: 12px; margin-bottom: 24px; }
-.stat { flex: 1; background: var(--surface); border-radius: 12px; padding: 16px; text-align: center;
-  border: 1px solid var(--border); }
-.stat-num { display: block; font-size: 28px; font-weight: 800; color: var(--accent2); }
-.stat-label { font-size: 12px; color: var(--text-dim); }
+a {
+  color: var(--navy);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+a:hover { border-color: var(--navy); }
 
-/* Tabs */
-.tab-nav { display: flex; gap: 4px; margin-bottom: 20px; background: var(--surface); border-radius: 12px;
-  padding: 4px; border: 1px solid var(--border); overflow-x: auto; }
-.tab-btn { flex: 1; padding: 10px 16px; background: none; border: none; color: var(--text-dim);
-  font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all .2s;
-  white-space: nowrap; }
-.tab-btn.active { background: var(--accent); color: #fff; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+.page {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
 
-/* News Cards */
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.card { background: var(--surface); border-radius: 12px; padding: 20px;
-  border: 1px solid var(--border); transition: transform .2s; }
-.card:hover { transform: translateY(-2px); }
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-.badge { color: #fff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
-.relevance-dot { width: 8px; height: 8px; border-radius: 50%; }
-.rel-high { background: var(--green); }
-.rel-medium { background: var(--amber); }
-.rel-low { background: var(--text-dim); }
-.card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
-.card-insight { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
-.card-action { font-size: 12px; color: var(--accent2); font-weight: 600; }
+/* ── Masthead ── */
+.masthead {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.masthead-rule {
+  height: 2px;
+  background: var(--text);
+  margin: 8px 0;
+}
+.masthead-rule:first-child { height: 4px; }
+.masthead-meta {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+.masthead-title {
+  font-family: 'Playfair Display', 'Noto Serif KR', Georgia, serif;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--navy);
+  margin: 4px 0;
+}
+.masthead-sub {
+  font-size: 13px;
+  letter-spacing: 3px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.masthead-issue {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: var(--gold);
+  margin-top: 8px;
+  font-weight: 700;
+}
 
-/* HN */
-.hn-list { display: flex; flex-direction: column; gap: 12px; }
-.hn-item { display: flex; gap: 14px; background: var(--surface); border-radius: 12px; padding: 16px;
-  border: 1px solid var(--border); }
-.hn-buzz { font-size: 24px; flex-shrink: 0; }
-.hn-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+/* ── Lede ── */
+.lede {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 20px 0;
+  margin-bottom: 28px;
+}
+.lede-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.lede-list {
+  list-style: none;
+  padding: 0;
+}
+.lede-list li {
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+  font-size: 15px;
+  color: var(--text);
+}
+.lede-list li::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 14px;
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* ── Content Grid ── */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 32px;
+  align-items: start;
+}
+.desks { min-width: 0; }
+
+/* ── Desk Sections ── */
+.desk {
+  margin-bottom: 32px;
+}
+.desk-header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 14px;
+  margin-bottom: 16px;
+  border-left: 4px solid;
+}
+.desk-header-market { border-color: var(--desk-market); background: rgba(27,42,74,0.04); }
+.desk-header-indie { border-color: var(--desk-indie); background: rgba(74,103,65,0.04); }
+.desk-header-contents { border-color: var(--desk-contents); background: rgba(107,66,38,0.04); }
+.desk-header-culture { border-color: var(--desk-culture); background: rgba(90,62,107,0.04); }
+
+.desk-name {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.desk-header-market .desk-name { color: var(--desk-market); }
+.desk-header-indie .desk-name { color: var(--desk-indie); }
+.desk-header-contents .desk-name { color: var(--desk-contents); }
+.desk-header-culture .desk-name { color: var(--desk-culture); }
+
+.desk-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  letter-spacing: 1px;
+}
+.desk-body { padding: 0 4px; }
+
+/* ── Market Articles ── */
+.desk-article {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.desk-article:last-child { border-bottom: none; }
+.article-meta { margin-bottom: 6px; }
+.article-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.tag-high { background: var(--tag-high); color: #fff; }
+.tag-medium { background: var(--tag-medium); color: #fff; }
+.tag-low { background: var(--tag-low); color: #fff; }
+.article-title {
+  font-family: 'Playfair Display', 'Noto Serif KR', Georgia, serif;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+.article-title a { border-bottom-color: var(--border-light); }
+.article-title a:hover { border-bottom-color: var(--navy); }
+.article-body {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 6px;
+}
+.article-action {
+  font-size: 13px;
+  color: var(--gold);
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* ── Indie (Steam) ── */
+.indie-summary {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 14px;
+}
+.indie-summary p { font-size: 14px; color: var(--text-dim); }
+.genre-line {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--desk-indie);
+  letter-spacing: 0.5px;
+}
+.table-wrap { overflow-x: auto; margin-bottom: 16px; }
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.data-table th {
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 8px 10px;
+  border-bottom: 2px solid var(--border);
+}
+.data-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.col-rank { font-weight: 700; color: var(--desk-indie); width: 32px; }
+.col-name { font-weight: 600; }
+.col-tags { color: var(--text-dim); font-size: 12px; }
+.col-score { font-weight: 700; color: var(--desk-indie); }
+
+.game-briefs { padding-top: 8px; }
+.game-brief {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 13px;
+}
+.game-brief:last-child { border-bottom: none; }
+.game-brief strong { display: block; font-size: 14px; margin-bottom: 2px; }
+.game-liner { color: var(--text-dim); }
+.game-note { display: block; color: var(--gold); font-style: italic; font-size: 12px; margin-top: 2px; }
+
+/* ── Contents (HN) ── */
+.hn-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.hn-row:last-child { border-bottom: none; }
+.hn-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.hn-title a { border-bottom-color: var(--border-light); }
+.hn-title a:hover { border-bottom-color: var(--desk-contents); }
 .hn-summary { font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
-.hn-insight { font-size: 12px; color: var(--accent2); }
+.hn-insight { font-size: 12px; color: var(--desk-contents); font-style: italic; }
 
-/* Steam */
-.steam-summary { background: var(--surface); border-radius: 12px; padding: 20px; margin-bottom: 16px;
-  border: 1px solid var(--border); }
-.steam-summary h3 { margin-bottom: 8px; }
-.hot-genres { margin-top: 10px; font-size: 13px; color: var(--amber); }
-.steam-table-wrap { overflow-x: auto; margin-bottom: 16px; }
-.steam-table { width: 100%; border-collapse: collapse; background: var(--surface);
-  border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
-.steam-table th { background: var(--surface2); padding: 10px 14px; font-size: 12px;
-  color: var(--text-dim); text-align: left; font-weight: 600; }
-.steam-table td { padding: 10px 14px; font-size: 13px; border-top: 1px solid var(--border); }
-.steam-table .rank { font-weight: 800; color: var(--accent2); }
-.steam-table .game-name { font-weight: 600; }
-.steam-table .tags { color: var(--text-dim); font-size: 12px; }
-.steam-table .score { font-weight: 700; color: var(--green); }
-.game-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.game-card { background: var(--surface); border-radius: 10px; padding: 16px;
-  border: 1px solid var(--border); }
-.game-card strong { font-size: 14px; }
-.game-card p { font-size: 12px; color: var(--text-dim); margin: 4px 0; }
-.why-notable { font-size: 11px; color: var(--amber); }
+/* ── Culture (Reddit) ── */
+.culture-row {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.culture-row:last-child { border-bottom: none; }
+.culture-sub {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--desk-culture);
+  text-transform: uppercase;
+}
+.culture-row h4 {
+  font-family: 'Playfair Display', 'Noto Serif KR', Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+.culture-summary { font-size: 13px; color: var(--text-dim); }
+.culture-insight { font-size: 12px; color: var(--desk-culture); font-style: italic; margin-top: 4px; }
 
-/* Reddit */
-.reddit-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.reddit-card { background: var(--surface); border-radius: 12px; padding: 18px;
-  border: 1px solid var(--border); }
-.reddit-sub { font-size: 11px; color: var(--accent2); font-weight: 700; margin-bottom: 6px; }
-.reddit-card h4 { font-size: 14px; margin-bottom: 6px; }
-.reddit-summary { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
-.reddit-insight { font-size: 12px; color: var(--green); }
+/* ── Gossip Sidebar ── */
+.sidebar { position: sticky; top: 24px; }
+.gossip {
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+.gossip-header {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gold);
+  margin-bottom: 14px;
+}
+.gossip-item {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.gossip-item:last-child { border-bottom: none; }
+.gossip-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+.gossip-title a { border-bottom-color: var(--border-light); }
+.gossip-title a:hover { border-bottom-color: var(--gold); }
+.gossip-note { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+.gossip-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
 
-/* Footer */
-.footer { text-align: center; padding: 32px 0 16px; color: var(--text-dim); font-size: 12px; }
-.footer-sub { margin-top: 4px; opacity: 0.6; }
-.empty { text-align: center; padding: 40px; color: var(--text-dim); }
+/* ── Footer ── */
+.editorial-footer {
+  margin-top: 40px;
+  border-top: 2px solid var(--text);
+  padding-top: 20px;
+}
+.selection-note {
+  margin-bottom: 20px;
+}
+.note-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.selection-note p {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+.footer-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+.footer-sep { color: var(--border); }
+.footer-bar a {
+  color: var(--navy);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
 
-@media (max-width: 640px) {
-  .stats-bar { flex-wrap: wrap; }
-  .stat { min-width: calc(50% - 8px); }
-  .card-grid, .game-grid, .reddit-grid { grid-template-columns: 1fr; }
-  .hero-title { font-size: 24px; }
+.empty-note {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 14px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+  .sidebar { position: static; }
+  .masthead-title { font-size: 32px; letter-spacing: 3px; }
+  .desk-name { font-size: 16px; }
+}
+
+@media print {
+  body { font-size: 12px; }
+  .page { max-width: 100%; padding: 0; }
+  .content-grid { grid-template-columns: 1fr 220px; }
+  a { border-bottom: none; color: var(--text); }
+  .sidebar { position: static; }
 }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="page">
 
-<header class="hero">
-  <div class="hero-badge">ISSUE #007</div>
-  <h1 class="hero-title">📡 Comm Radar</h1>
-  <p class="hero-subtitle">Weekly Communication Intelligence · 2026년 05월 19일</p>
-  <div class="hero-summary"><div class="hero-item">📊 이번 주 리포트를 확인하세요.</div></div>
+
+<header class="masthead">
+  <div class="masthead-rule"></div>
+  <div class="masthead-meta">2026.05.19 화요일</div>
+  <h1 class="masthead-title">COMM RADAR</h1>
+  <div class="masthead-sub">Bagelcode Communication Intelligence</div>
+  <div class="masthead-issue">No. 008</div>
+  <div class="masthead-rule"></div>
 </header>
-<div class="stats-bar"></div>
 
-<nav class="tab-nav">
-  <button class="tab-btn active" data-tab="news">📰 뉴스 인사이트</button>
-  <button class="tab-btn" data-tab="tech">🔶 테크 담론</button>
-  <button class="tab-btn" data-tab="steam">🎮 게임 트렌드</button>
-  
-</nav>
+<section class="lede">
+  <div class="lede-label">Weekly Briefing</div>
+  <ul class="lede-list"><li>이번 주 수집된 데이터가 부족하여 요약을 생성하지 못했습니다.</li></ul>
+</section>
 
-<div class="tab-content active" id="tab-news"><div class="empty">뉴스 데이터가 없습니다.</div></div>
-<div class="tab-content" id="tab-tech"><div class="empty">Hacker News 데이터가 없습니다.</div></div>
-<div class="tab-content" id="tab-steam"><div class="empty">Steam 데이터가 없습니다.</div></div>
-
-
-<footer class="footer">
-  <p>Comm Radar #007 · 2026년 05월 19일 · Bagelcode Communication Intelligence OS</p>
-  <p class="footer-sub">Powered by Claude API · 자동 생성 리포트</p>
-</footer>
+<div class="content-grid">
+  <main class="desks">
+    
+<section class="desk desk-market">
+  <div class="desk-header desk-header-market">
+    <span class="desk-name">Market</span>
+    <span class="desk-sub"></span>
+  </div>
+  <div class="desk-body">
+    <p class="empty-note">수집된 시장 뉴스가 없습니다.</p>
+  </div>
+</section>
+    
+<section class="desk desk-indie">
+  <div class="desk-header desk-header-indie">
+    <span class="desk-name">Indie</span>
+    <span class="desk-sub">인디 게임 · 트렌드</span>
+  </div>
+  <div class="desk-body">
+    <p class="empty-note">Steam 데이터가 없습니다.</p>
+  </div>
+</section>
+    
+<section class="desk desk-contents">
+  <div class="desk-header desk-header-contents">
+    <span class="desk-name">Contents</span>
+    <span class="desk-sub"></span>
+  </div>
+  <div class="desk-body">
+    <p class="empty-note">Hacker News 데이터가 없습니다.</p>
+  </div>
+</section>
+    
+<section class="desk desk-culture">
+  <div class="desk-header desk-header-culture">
+    <span class="desk-name">Culture</span>
+    <span class="desk-sub"></span>
+  </div>
+  <div class="desk-body">
+    <p class="empty-note">커뮤니티 데이터가 없습니다.</p>
+  </div>
+</section>
+  </main>
+  <aside class="sidebar">
+    
+<div class="gossip">
+  <div class="gossip-header">Gossip</div>
+  <p class="gossip-empty">이번 호에는 가십이 없습니다.</p>
 </div>
-<script>
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-  });
-});
-</script>
+  </aside>
+</div>
+
+
+<footer class="editorial-footer">
+  <div class="selection-note">
+    <div class="note-label">Selection Note</div>
+    <p>
+      본 리포트는 Comm Radar OS가 Google News, Hacker News, Steam, Reddit에서
+      자동 수집한 데이터를 Claude API로 분석하여 생성합니다.
+      베이글코드 커뮤니케이션 전략에 유의미한 시그널을 우선 선별하며,
+      각 기사의 원문은 제목 링크를 통해 확인할 수 있습니다.
+    </p>
+  </div>
+  <div class="footer-bar">
+    <span>Comm Radar No.008 / 2026년 05월 19일</span>
+    <span class="footer-sep">&middot;</span>
+    <a href="https://bagelcode.com" target="_blank" rel="noopener">bagelcode.com</a>
+  </div>
+</footer>
+
+</div>
 </body>
 </html>
