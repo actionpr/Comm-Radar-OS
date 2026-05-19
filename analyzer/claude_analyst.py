@@ -9,9 +9,15 @@ from config import CLAUDE_MODEL, CLAUDE_MAX_TOKENS, ANTHROPIC_API_KEY, ANTHROPIC
 
 
 def get_client():
-    kwargs = {"api_key": ANTHROPIC_API_KEY}
+    kwargs = {
+        "api_key": ANTHROPIC_API_KEY,
+        "timeout": 120.0,
+    }
     if ANTHROPIC_BASE_URL:
         kwargs["base_url"] = ANTHROPIC_BASE_URL
+        kwargs["default_headers"] = {
+            "Authorization": f"Bearer {ANTHROPIC_API_KEY}",
+        }
     return anthropic.Anthropic(**kwargs)
 
 
