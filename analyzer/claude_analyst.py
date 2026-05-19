@@ -4,34 +4,41 @@ Claude API 분석기
 """
 
 import json
-import anthropic
+import requests as http_client
 from config import CLAUDE_MODEL, CLAUDE_MAX_TOKENS, ANTHROPIC_API_KEY, ANTHROPIC_BASE_URL, BAGELCODE_CONTEXT
 
 
-def get_client():
-    kwargs = {
-        "api_key": ANTHROPIC_API_KEY,
-        "timeout": 120.0,
-    }
-    if ANTHROPIC_BASE_URL:
-        kwargs["base_url"] = ANTHROPIC_BASE_URL
-        kwargs["default_headers"] = {
-            "Authorization": f"Bearer {ANTHROPIC_API_KEY}",
-        }
-    return anthropic.Anthropic(**kwargs)
-
-
 def call_claude(prompt: str, system: str = "") -> str:
-    """Claude API 호출 래퍼"""
-    client = get_client()
+    """Claude API 호출 — AIProxy Passthrough 방식"""
+    if ANTHROPIC_BASE_URL:
+        url = f"{ANTHROPIC_BASE_URL.rstrip('/')}/v1/messages"
+        headers = {
+            "Authorization": f"Bearer {ANTHROPIC_API_KEY}",
+            "Content-Type": "application/json",
+        }
+    else:
+        url = "https://api.anthropic.com/v1/messages"
+        headers = {
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "Content-Type": "application/json",
+        }
+
+    body = {
+        "model": CLAUDE_MODEL,
+        "max_tokens": CLAUDE_MAX_TOKENS,
+        "messages": [{"role": "user", "content": prompt}],
+    }
+    if system:
+        body["system"] = system
+    else:
+        body["system"] = _default_system()
+
     try:
-        response = client.messages.create(
-            model=CLAUDE_MODEL,
-            max_tokens=CLAUDE_MAX_TOKENS,
-            system=system or _default_system(),
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.content[0].text
+        resp = http_client.post(url, headers=headers, json=body, timeout=120)
+        resp.raise_for_status()
+        data = resp.json()
+        return data["content"][0]["text"]
     except Exception as e:
         print(f"  [ERROR] Claude API 호출 실패: {e}")
         return ""
@@ -79,11 +86,10 @@ def analyze_news_batch(news_by_category: dict) -> list[dict]:
         print("  [INFO] 분석할 뉴스가 없습니다 (수집 0건)")
         return []
 
-    # URL 매핑 테이블 (제목 → URL) — Claude가 반환한 제목으로 원본 URL 복원
+    # URL 매핑 테이블 (제목 → URL)
     url_map = {}
     for item in all_items:
         url_map[item["title"].strip()] = item["url"]
-        # 부분 매칭을 위한 축약 키도 저장
         short_key = item["title"].strip()[:40].lower()
         url_map[short_key] = item["url"]
 
@@ -116,7 +122,7 @@ def analyze_news_batch(news_by_category: dict) -> list[dict]:
 
     try:
         results = _parse_json(result_text)
-        # URL 복원: Claude가 반환한 제목으로 원본 URL 매칭
+        # URL 복원
         for item in results:
             title = item.get("title", "").strip()
             url = url_map.get(title, "")
