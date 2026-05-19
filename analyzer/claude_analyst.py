@@ -44,11 +44,20 @@ def _default_system() -> str:
 4. 반드시 한국어로 작성"""
 
 
+def _parse_json(text: str):
+    """Claude 응답에서 JSON을 안전하게 추출"""
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.split("\n", 1)[1].rsplit("```", 1)[0]
+    return json.loads(cleaned)
+
+
 def analyze_news_batch(news_by_category: dict) -> list[dict]:
     """
     카테고리별 뉴스를 분석하여 인사이트 도출
+    URL을 보존하여 리포트에서 클릭 가능하게 함
     """
-    print("\n🧠 뉴스 AI 분석 중...")
+    print("\n  뉴스 AI 분석 중...")
 
     all_items = []
     for category, items in news_by_category.items():
@@ -61,7 +70,16 @@ def analyze_news_batch(news_by_category: dict) -> list[dict]:
             })
 
     if not all_items:
+        print("  [INFO] 분석할 뉴스가 없습니다 (수집 0건)")
         return []
+
+    # URL 매핑 테이블 (제목 → URL) — Claude가 반환한 제목으로 원본 URL 복원
+    url_map = {}
+    for item in all_items:
+        url_map[item["title"].strip()] = item["url"]
+        # 부분 매칭을 위한 축약 키도 저장
+        short_key = item["title"].strip()[:40].lower()
+        url_map[short_key] = item["url"]
 
     news_text = "\n".join(
         f"[{item['category']}] {item['title']} (출처: {item['source']})"
@@ -79,7 +97,7 @@ def analyze_news_batch(news_by_category: dict) -> list[dict]:
 
 [
   {{
-    "title": "뉴스 제목",
+    "title": "뉴스 제목 (원문 그대로)",
     "category": "카테고리",
     "relevance": "high|medium|low",
     "type": "PR기회|경쟁동향|시장트렌드|리스크|참고",
@@ -91,22 +109,35 @@ def analyze_news_batch(news_by_category: dict) -> list[dict]:
     result_text = call_claude(prompt)
 
     try:
-        # JSON 파싱 (코드블록 제거)
-        cleaned = result_text.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1].rsplit("```", 1)[0]
-        return json.loads(cleaned)
-    except (json.JSONDecodeError, IndexError):
-        print("  [WARN] 뉴스 분석 JSON 파싱 실패")
+        results = _parse_json(result_text)
+        # URL 복원: Claude가 반환한 제목으로 원본 URL 매칭
+        for item in results:
+            title = item.get("title", "").strip()
+            url = url_map.get(title, "")
+            if not url:
+                short_key = title[:40].lower()
+                url = url_map.get(short_key, "")
+            item["url"] = url
+        return results
+    except (json.JSONDecodeError, IndexError) as e:
+        print(f"  [WARN] 뉴스 분석 JSON 파싱 실패: {e}")
         return []
 
 
 def analyze_hackernews(hn_items: list[dict]) -> list[dict]:
     """Hacker News 스토리 분석"""
-    print("🧠 Hacker News AI 분석 중...")
+    print("  Hacker News AI 분석 중...")
 
     if not hn_items:
+        print("  [INFO] 분석할 HN 항목이 없습니다")
         return []
+
+    # URL 매핑 테이블
+    url_map = {}
+    for item in hn_items:
+        url_map[item["title"].strip()] = item.get("url", "")
+        short_key = item["title"].strip()[:40].lower()
+        url_map[short_key] = item.get("url", "")
 
     hn_text = "\n".join(
         f"- {item['title']} (Score: {item['score']}, Comments: {item['comments']})"
@@ -124,8 +155,8 @@ def analyze_hackernews(hn_items: list[dict]) -> list[dict]:
 
 [
   {{
-    "title": "스토리 제목",
-    "buzz_level": "🔥|⚡|💡",
+    "title": "스토리 제목 (원문 그대로)",
+    "buzz_level": "high|medium|low",
     "summary": "한 줄 요약 (한국어)",
     "insight": "베이글코드와의 연결점 또는 시사점 (한국어, 2문장)"
   }}
@@ -134,21 +165,28 @@ def analyze_hackernews(hn_items: list[dict]) -> list[dict]:
     result_text = call_claude(prompt)
 
     try:
-        cleaned = result_text.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1].rsplit("```", 1)[0]
-        return json.loads(cleaned)
-    except (json.JSONDecodeError, IndexError):
-        print("  [WARN] HN 분석 JSON 파싱 실패")
+        results = _parse_json(result_text)
+        # URL 복원
+        for item in results:
+            title = item.get("title", "").strip()
+            url = url_map.get(title, "")
+            if not url:
+                short_key = title[:40].lower()
+                url = url_map.get(short_key, "")
+            item["url"] = url
+        return results
+    except (json.JSONDecodeError, IndexError) as e:
+        print(f"  [WARN] HN 분석 JSON 파싱 실패: {e}")
         return []
 
 
-def analyze_steam_trending(trending: list[dict]) -> list[dict]:
+def analyze_steam_trending(trending: list[dict]) -> dict:
     """Steam 트렌딩 게임 분석"""
-    print("🧠 Steam 트렌드 AI 분석 중...")
+    print("  Steam 트렌드 AI 분석 중...")
 
     if not trending:
-        return []
+        print("  [INFO] 분석할 Steam 항목이 없습니다")
+        return {}
 
     steam_text = "\n".join(
         f"- {g['name']} (긍정률: {g['bayesian_rate']}%, 소유자: {g['owners_mid']:,}, "
@@ -178,18 +216,15 @@ def analyze_steam_trending(trending: list[dict]) -> list[dict]:
     result_text = call_claude(prompt)
 
     try:
-        cleaned = result_text.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1].rsplit("```", 1)[0]
-        return json.loads(cleaned)
-    except (json.JSONDecodeError, IndexError):
-        print("  [WARN] Steam 분석 JSON 파싱 실패")
+        return _parse_json(result_text)
+    except (json.JSONDecodeError, IndexError) as e:
+        print(f"  [WARN] Steam 분석 JSON 파싱 실패: {e}")
         return {}
 
 
 def generate_weekly_summary(news_insights: list, hn_insights: list, steam_analysis: dict) -> str:
-    """주간 종합 요약 생성 (리포트 Hero 섹션용)"""
-    print("🧠 주간 종합 요약 생성 중...")
+    """주간 종합 요약 생성 (리포트 Lede 섹션용)"""
+    print("  주간 종합 요약 생성 중...")
 
     context_parts = []
 
@@ -204,13 +239,17 @@ def generate_weekly_summary(news_insights: list, hn_insights: list, steam_analys
     if steam_analysis and isinstance(steam_analysis, dict):
         context_parts.append(f"게임 트렌드: {steam_analysis.get('trend_summary', '')}")
 
+    if not context_parts:
+        return "이번 주 수집된 데이터가 부족하여 요약을 생성하지 못했습니다."
+
     prompt = f"""다음은 이번 주 수집·분석된 커뮤니케이션 인텔리전스입니다:
 
 {chr(10).join(context_parts)}
 
 위 내용을 종합하여, 베이글코드 커뮤니케이션 디렉터가 이번 주 알아야 할 핵심 3가지를
 간결하게 요약하세요 (총 150자 이내, 한국어).
-각 항목은 이모지로 시작하세요. 줄바꿈으로 구분하세요.
+각 항목은 줄바꿈으로 구분하세요.
+이모지는 사용하지 마세요.
 추가 설명 없이 요약만 출력하세요."""
 
     return call_claude(prompt)
@@ -218,9 +257,10 @@ def generate_weekly_summary(news_insights: list, hn_insights: list, steam_analys
 
 def analyze_reddit_posts(posts: list[dict]) -> list[dict]:
     """Reddit 포스트 분석"""
-    print("🧠 Reddit 커뮤니티 AI 분석 중...")
+    print("  Reddit 커뮤니티 AI 분석 중...")
 
     if not posts:
+        print("  [INFO] 분석할 Reddit 항목이 없습니다")
         return []
 
     posts_text = "\n".join(
@@ -242,17 +282,14 @@ def analyze_reddit_posts(posts: list[dict]) -> list[dict]:
     "subreddit": "서브레딧명",
     "title": "포스트 제목",
     "summary": "유저 목소리 요약 (1줄, 한국어)",
-    "insight": "💡 신작 기획 힌트 또는 트렌드 시사점 (1문장, 한국어)"
+    "insight": "신작 기획 힌트 또는 트렌드 시사점 (1문장, 한국어)"
   }}
 ]"""
 
     result_text = call_claude(prompt)
 
     try:
-        cleaned = result_text.strip()
-        if cleaned.startswith("```"):
-            cleaned = cleaned.split("\n", 1)[1].rsplit("```", 1)[0]
-        return json.loads(cleaned)
-    except (json.JSONDecodeError, IndexError):
-        print("  [WARN] Reddit 분석 JSON 파싱 실패")
+        return _parse_json(result_text)
+    except (json.JSONDecodeError, IndexError) as e:
+        print(f"  [WARN] Reddit 분석 JSON 파싱 실패: {e}")
         return []
